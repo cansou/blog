@@ -16,6 +16,11 @@
 *.iml
 *.ipr
 
+mvnw
+.cmd
+../*.iml
+../.idea/
+
 ### NetBeans ###
 /nbproject/private/
 /build/
