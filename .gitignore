@@ -17,9 +17,10 @@
 *.ipr
 
 mvnw
-.cmd
+*.cmd
 ../*.iml
 ../.idea/
+
 
 ### NetBeans ###
 /nbproject/private/
@@ -28,3 +29,5 @@ mvnw
 /dist/
 /nbdist/
 /.nb-gradle/
+blog-cloud/eureka-server/.mvn/wrapper/maven-wrapper.properties
+blog-cloud/eureka-server/.mvn/wrapper/maven-wrapper.jar
