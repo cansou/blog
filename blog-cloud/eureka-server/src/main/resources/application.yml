@@ -1,0 +1,19 @@
+server:
+  port: 9100
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://peer1:9100/eureka/
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    hostname: peer1
+    prefer-ip-address: false
+    appname: ${spring.application.name}
+    instanceId: ${eureka.instance.hostname}:${server.port}
+
+spring:
+  application:
+    name: eureka-server
+
