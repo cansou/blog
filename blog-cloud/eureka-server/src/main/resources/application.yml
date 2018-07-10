@@ -3,10 +3,10 @@ server:
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://peer1:9100/eureka/
     register-with-eureka: false
     fetch-registry: false
+    serviceUrl:
+      defaultZone: http://peer1:9100/eureka/
   instance:
     hostname: peer1
     prefer-ip-address: false
