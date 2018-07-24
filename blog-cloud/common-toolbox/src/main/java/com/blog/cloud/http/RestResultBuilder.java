@@ -1,5 +1,10 @@
 package com.blog.cloud.http;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class RestResultBuilder<T> {
 
     private int errCode;
@@ -17,10 +22,6 @@ public class RestResultBuilder<T> {
         this.errCode = errCode;
         this.errMsg = errMsg;
         this.data = data;
-    }
-
-    public RestResultBuilder builder(){
-        return null;
     }
 
 }
