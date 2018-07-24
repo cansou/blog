@@ -1,0 +1,70 @@
+server:
+  port: 9200
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9100/eureka/
+  instance:
+    instanceId: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 5
+
+spring:
+  application:
+    name: blog-server
+  redis:
+    database: 0
+    host: 39.108.235.243
+    port: 6379
+    password: luo19950105.
+    timeout: 10s
+  http:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  datasource:
+      name: blog_cloud
+      url: jdbc:mysql://localhost:3306/blog_cloud?useUnicode=true&autoReconnect=true
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      filters: stat
+      maxActive: 20
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
+      monitor:
+        enabled: enabled
+        druid-stat-view: /druid/*
+        allow: 127.0.0.1
+        deny: 192.168.1.118
+        login-username: admin
+        login-password: luo19950105
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+        reset-enable: false
+        druid-web-stat-filter: /*
+mybatis:
+  type-aliases-package: com.blog.cloud.pojo.article
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+        isolation:
+          thread:
+            timeoutInMilliseconds: 600000

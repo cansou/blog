@@ -1,0 +1,53 @@
+server:
+  port: 9900
+
+spring:
+  application:
+    name: web-gateway
+  redis:
+    database: 0
+    host: 39.108.235.243
+    port: 6379
+    password: luo19950105.
+    timeout: 10s
+  http:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9100/eureka/
+  instance:
+    instanceId: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 5
+
+zuul:
+  host:
+    socket-timeout-millis: 60000
+    connect-timeout-millis: 60000
+  routes:
+    api-manage:
+      path: /blog/**
+      serviceId: blog-server
+
+manage-server:
+  ribbon:
+      ReadTimeout: 30000
+      ConnectTimeout: 15000
+      MaxAutoRetries: 0
+      MaxAutoRetriesNextServer: 0
+      OkToRetryOnAllOperations: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+        isolation:
+          thread:
+            timeoutInMilliseconds: 600000
