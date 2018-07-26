@@ -53,11 +53,20 @@ spring:
         exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
         reset-enable: false
         druid-web-stat-filter: /*
-mybatis:
-  type-aliases-package: com.blog.cloud.pojo.article
+
+mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.blog.cloud.pojo.article
+  global-config:
+    id-type: 2
+    db-column-underline: true
+    refresh-mapper: true
+    logic-delete-value: 1
+    logic-not-delete-value: 0
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
   configuration:
     map-underscore-to-camel-case: true
+    cache-enabled: false
 
 hystrix:
   command:
@@ -68,3 +77,4 @@ hystrix:
         isolation:
           thread:
             timeoutInMilliseconds: 600000
+
