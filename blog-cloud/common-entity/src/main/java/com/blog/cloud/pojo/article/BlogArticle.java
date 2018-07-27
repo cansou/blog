@@ -3,6 +3,8 @@ package com.blog.cloud.pojo.article;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -21,13 +23,13 @@ public class BlogArticle implements Serializable {
 
     private static final long serialVersionUID = -2261251044779563022L;
 
-    @TableId("id")
+    @TableId(value = "id", type = IdType.ID_WORKER_STR)
     @ApiModelProperty(name = "id", value = "文章ID")
     private String id;
 
     @TableField("user_id")
     @ApiModelProperty(name = "userId", value = "用户ID")
-    private Integer userId;
+    private String userId;
 
     @TableField("title")
     @ApiModelProperty(name = "title", value = "文章标题")
@@ -39,10 +41,12 @@ public class BlogArticle implements Serializable {
 
     @TableField("create_time")
     @ApiModelProperty(name = "createTime", value = "创建时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Long createTime;
 
     @TableField("update_time")
     @ApiModelProperty(name = "updateTime", value = "更新时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Long updateTime;
 
     @TableField("article_status")

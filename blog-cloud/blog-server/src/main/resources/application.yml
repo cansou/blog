@@ -58,7 +58,7 @@ mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.blog.cloud.pojo.article
   global-config:
-    id-type: 2
+    id-type: 5
     db-column-underline: true
     refresh-mapper: true
     logic-delete-value: 1

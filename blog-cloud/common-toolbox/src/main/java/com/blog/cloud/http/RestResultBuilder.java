@@ -11,6 +11,9 @@ public class RestResultBuilder<T> {
     private String errMsg;
     private T data;
 
+    public RestResultBuilder() {
+    }
+
     public RestResultBuilder(int errCode, String errMsg) {
         super();
         this.errCode = errCode;
