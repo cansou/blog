@@ -23,7 +23,7 @@ public class BlogArticleController {
 	@Autowired
 	private IBlogArticleService blogArticleService;
 
-	@RequestMapping(value = "/findAllBlogArticle", method = RequestMethod.GET)
+	@RequestMapping(value = "/findAllBlogArticle", method = RequestMethod.POST)
 	@ApiOperation(value = "列出所有的文章", notes = "列出所有的文章")
 	public RestResultBuilder findAllBlogArticle() {
 		return blogArticleService.findAllBlogArticle();

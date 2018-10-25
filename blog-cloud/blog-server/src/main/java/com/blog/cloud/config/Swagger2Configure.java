@@ -26,8 +26,8 @@ public class Swagger2Configure {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Joosure云平台-商户系统")
-                .description("Joosure云平台-商户系统")
+                .title("博客云平台-博客系统")
+                .description("博客云平台-博客系统")
                 .termsOfServiceUrl("http://www.joosure.com")
                 .contact("Shawn")
                 .version("1.0")

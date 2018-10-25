@@ -63,6 +63,13 @@
             <version>4.1.4.RELEASE</version>
         </dependency>
 
+        <!-- 解密需要用的jar  -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.57</version>
+        </dependency>
+
     </dependencies>
 
 </project>
