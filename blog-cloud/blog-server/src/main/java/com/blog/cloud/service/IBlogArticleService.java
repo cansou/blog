@@ -19,4 +19,6 @@ public interface IBlogArticleService {
      */
     RestResultBuilder addBlogArticle(BlogArticleAddDto addDto);
 
+    RestResultBuilder sendEmail() throws Exception;
+
 }

@@ -35,4 +35,10 @@ public class BlogArticleController {
 		return blogArticleService.addBlogArticle(addDto);
 	}
 
+	@RequestMapping(value = "/sendEmail", method = RequestMethod.GET)
+	@ApiOperation(value = "添加博客", notes = "添加博客")
+	public RestResultBuilder sendEmail() throws Exception {
+		return blogArticleService.sendEmail();
+	}
+
 }

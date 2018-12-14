@@ -1,6 +1,5 @@
 package com.blog.cloud.service.impl;
 
-import com.baomidou.mybatisplus.spring.boot.starter.GlobalConfig;
 import com.blog.cloud.dao.BlogArticleDao;
 import com.blog.cloud.domain.article.BlogArticleAddDto;
 import com.blog.cloud.http.RestResultBuilder;
@@ -39,5 +38,14 @@ public class BlogArticleServiceImpl implements IBlogArticleService {
 			builder.setErrMsg("添加失败");
 		}
 		return builder;
+	}
+
+	@Override
+	public RestResultBuilder sendEmail() throws Exception {
+		log.info("开始发送");
+//		EmailUtils.sendAccountActivateEmail();
+//		EmailUtils.sendmail("hhemvoiirzdzbfih");
+		log.info("发送成功");
+		return new RestResultBuilder<>(HttpStatus.OK.value(), "添加成功");
 	}
 }
