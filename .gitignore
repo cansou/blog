@@ -31,3 +31,4 @@ mvnw
 /.nb-gradle/
 blog-cloud/eureka-server/.mvn/wrapper/maven-wrapper.properties
 blog-cloud/eureka-server/.mvn/wrapper/maven-wrapper.jar
+*.class
