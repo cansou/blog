@@ -11,6 +11,19 @@ CREATE TABLE `blog_article`(
   PRIMARY KEY (id)
 )ENGINE=INNODB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='博客文章表';
 
+DROP TABLE IF EXISTS `blog_user`;
+CREATE TABLE `blog_user`(
+  `id` VARCHAR(64) NOT NUll COMMENT '文章ID',
+  `nickname` VARCHAR(64) NOT NULL COMMENT '用户昵称',
+  `username` VARCHAR(64) NOT NULL COMMENT '用户名（电子邮箱）',
+  `password` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '密码',
+  `salt` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '盐值',
+  `create_time` BIGINT NOT NULL COMMENT '创建时间',
+  `update_time` BIGINT NOT NULL COMMENT '更新时间',
+  `user_status` TINYINT NOT NULL DEFAULT 1 COMMENT '用户状态（0 禁用 1 启用）',
+  PRIMARY KEY (id)
+)ENGINE=INNODB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='博客用户表';
+
 -- ----------------------------
 -- Table structure for oauth_access_token
 -- ----------------------------
