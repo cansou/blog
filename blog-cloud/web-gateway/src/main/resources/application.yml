@@ -23,17 +23,28 @@ zuul:
     socket-timeout-millis: 60000
     connect-timeout-millis: 60000
   routes:
-    api-manage:
+    api-blog:
       path: /blog/**
       serviceId: blog-server
+    api-user:
+      path: /user/**
+      serviceId: user-server
 
 blog-server:
   ribbon:
-      ReadTimeout: 30000
-      ConnectTimeout: 15000
-      MaxAutoRetries: 0
-      MaxAutoRetriesNextServer: 0
-      OkToRetryOnAllOperations: true
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
+
+user-server:
+  ribbon:
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
 
 hystrix:
   command:

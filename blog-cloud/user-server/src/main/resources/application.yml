@@ -1,5 +1,5 @@
 server:
-  port: 9200
+  port: 9300
 
 eureka:
   client:
@@ -10,9 +10,10 @@ eureka:
     prefer-ip-address: true
     leaseRenewalIntervalInSeconds: 5
 
+
 spring:
   application:
-    name: blog-server
+    name: user-server
 #  redis:
 #    database: 0
 #    host: 39.108.235.243

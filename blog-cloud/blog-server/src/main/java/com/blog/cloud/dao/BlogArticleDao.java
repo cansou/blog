@@ -19,7 +19,7 @@ public class BlogArticleDao {
 	@Autowired
 	private IBlogArticleMapper mapper;
 
-	public List<BlogArticle> selectArticle() {
+	public List<BlogArticle> selectBlogArticle() {
 		Page<BlogArticle> page = new Page<BlogArticle>(0, 10);
 		EntityWrapper<BlogArticle> blogWrapper = new EntityWrapper<>();
 		return mapper.selectPage(new Page<>(1,10), blogWrapper.eq("title", "1"));
