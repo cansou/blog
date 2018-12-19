@@ -1,11 +1,11 @@
 package com.blog.cloud.controller;
 
+import com.blog.cloud.common.BaseController;
 import com.blog.cloud.domain.article.BlogArticleAddDto;
 import com.blog.cloud.http.RestResultBuilder;
+import com.blog.cloud.pojo.article.BlogArticle;
 import com.blog.cloud.service.IBlogArticleService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/blog/article")
 @Api(value = "博客文章控制器", description = "博客文章控制器")
-public class BlogArticleController {
+public class BlogArticleController extends BaseController {
 
 	@Autowired
 	private IBlogArticleService blogArticleService;
@@ -26,6 +26,9 @@ public class BlogArticleController {
 	@RequestMapping(value = "/findAllBlogArticle", method = RequestMethod.POST)
 	@ApiOperation(value = "列出所有的文章", notes = "列出所有的文章")
 	public RestResultBuilder findAllBlogArticle() {
+
+		successBuild(new BlogArticle());
+
 		return blogArticleService.findAllBlogArticle();
 	}
 

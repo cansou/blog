@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  */
 @EnableTransactionManagement
 @Configuration
-@MapperScan("com.blog.cloud.dao.mapper.*")
+@MapperScan("com.blog.cloud.dao.*")
 public class MybatisPlusConfig {
 
     /***

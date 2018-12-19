@@ -18,8 +18,4 @@ public class BlogServerApplication {
         SpringApplication.run(BlogServerApplication.class, args);
     }
 
-    @Bean
-    SpringBootUtil springBootUtil() {
-        return new SpringBootUtil();
-    }
 }
