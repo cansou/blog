@@ -18,7 +18,7 @@ public class SendMailUtil {
 
     private static final String from = "550283387@qq.com";
 
-    @Autowired
+    @Autowired(required = false)
     private JavaMailSender mailSender;
 
     /**

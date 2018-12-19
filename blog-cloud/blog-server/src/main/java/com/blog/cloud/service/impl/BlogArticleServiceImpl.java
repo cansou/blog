@@ -1,13 +1,16 @@
 package com.blog.cloud.service.impl;
 
-import com.blog.cloud.dao.BlogArticleDao;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.blog.cloud.dao.IBlogArticleMapper;
 import com.blog.cloud.domain.article.BlogArticleAddDto;
 import com.blog.cloud.http.RestResultBuilder;
 import com.blog.cloud.pojo.article.BlogArticle;
 import com.blog.cloud.service.IBlogArticleService;
 import com.blog.cloud.utils.SendMailUtil;
-import com.blog.cloud.utils.SpringBootUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,24 +19,28 @@ import java.util.List;
 
 @Slf4j
 @Service("blogArticleService")
-public class BlogArticleServiceImpl implements IBlogArticleService {
+public class BlogArticleServiceImpl extends ServiceImpl<IBlogArticleMapper, BlogArticle> implements IBlogArticleService {
 
-	@Autowired
-	private BlogArticleDao blogArticleDao;
 
 	@Autowired
 	private SendMailUtil sendMailUtil;
 
 	@Override
 	public RestResultBuilder findAllBlogArticle() {
-		List<BlogArticle> blogArticles = blogArticleDao.selectBlogArticle();
+		Page<BlogArticle> page = new Page<>(0, 10);
+		EntityWrapper<BlogArticle> blogWrapper = new EntityWrapper<>();
+		List<BlogArticle> blogArticles = baseMapper.selectPage(page, blogWrapper.eq("title", "1"));
 		return new RestResultBuilder<>(HttpStatus.OK.value(), "访问成功", blogArticles);
 	}
 
 	@Override
 	public RestResultBuilder addBlogArticle(BlogArticleAddDto addDto) {
 		RestResultBuilder builder = new RestResultBuilder<>(HttpStatus.OK.value(), "添加成功");
-		Integer count = blogArticleDao.addBlogArticle(addDto);
+
+		BlogArticle article = new BlogArticle();
+		BeanUtils.copyProperties(addDto, article);
+		Integer count = baseMapper.insert(article);
+
 		if(count == 0){
 			builder.setErrCode(HttpStatus.CONTINUE.value());
 			builder.setErrMsg("添加失败");

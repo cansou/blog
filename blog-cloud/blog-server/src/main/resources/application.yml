@@ -101,21 +101,6 @@ spring:
           url-pattern: /druid/*
           #允许清除记录
           reset-enable: false
-  mail:
-    host: smtp.qq.com
-    port: 465
-    username: 550283387@qq.com
-    password: hhemvoiirzdzbfih
-    properties:
-      smtp:
-        auth: true
-        starttls:
-          enable: true
-          require: true
-      mail:
-        smtp:
-          ssl:
-            enable: true
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml

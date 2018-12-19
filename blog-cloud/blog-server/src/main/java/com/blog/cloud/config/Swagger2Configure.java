@@ -29,7 +29,7 @@ public class Swagger2Configure {
                 .title("博客云平台-博客系统")
                 .description("博客云平台-博客系统")
                 .termsOfServiceUrl("http://www.joosure.com")
-                .contact("Shawn")
+                .contact("Kudorei")
                 .version("1.0")
                 .build();
     }
