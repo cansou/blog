@@ -42,8 +42,8 @@ public class BlogArticleServiceImpl extends ServiceImpl<IBlogArticleMapper, Blog
 		Integer count = baseMapper.insert(article);
 
 		if(count == 0){
-			builder.setErrCode(HttpStatus.CONTINUE.value());
-			builder.setErrMsg("添加失败");
+			builder.setResultCode(HttpStatus.CONTINUE.value());
+			builder.setResultMsg("添加失败");
 		}
 		return builder;
 	}
