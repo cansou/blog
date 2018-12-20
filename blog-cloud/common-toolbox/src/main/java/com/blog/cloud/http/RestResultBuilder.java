@@ -7,23 +7,23 @@ import lombok.Setter;
 @Getter
 public class RestResultBuilder<T> {
 
-    private int errCode;
-    private String errMsg;
+    private int resultCode;
+    private String resultMsg;
     private T data;
 
     public RestResultBuilder() {
     }
 
-    public RestResultBuilder(int errCode, String errMsg) {
+    public RestResultBuilder(int resultCode, String resultMsg) {
         super();
-        this.errCode = errCode;
-        this.errMsg = errMsg;
+        this.resultCode = resultCode;
+        this.resultMsg = resultMsg;
     }
 
-    public RestResultBuilder(int errCode, String errMsg, T data) {
+    public RestResultBuilder(int resultCode, String resultMsg, T data) {
         super();
-        this.errCode = errCode;
-        this.errMsg = errMsg;
+        this.resultCode = resultCode;
+        this.resultMsg = resultMsg;
         this.data = data;
     }
 
