@@ -45,6 +45,10 @@ public class BlogUser implements Serializable {
     @ApiModelProperty(name = "updateTime", value = "更新时间")
     private Long updateTime;
 
+    @TableField("activated")
+    @ApiModelProperty(name = "activated", value = "激活状态（0 未激活 1 激活）")
+    private Integer activated;
+
     @TableField("user_status")
     @ApiModelProperty(name = "userStatus", value = "用户状态（0 冻结 1 正常）")
     private Integer userStatus;

@@ -22,6 +22,7 @@ public class UserServiceImpl extends ServiceImpl<IBlogUserMapper, BlogUser> impl
         blogUser.setCreateTime(currentTime);
         blogUser.setUpdateTime(currentTime);
         blogUser.setUserStatus(1);
+        blogUser.setActivated(0);
         return baseMapper.insert(blogUser);
     }
 

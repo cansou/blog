@@ -20,6 +20,7 @@ CREATE TABLE `blog_user`(
   `salt` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '盐值',
   `create_time` BIGINT NOT NULL COMMENT '创建时间',
   `update_time` BIGINT NOT NULL COMMENT '更新时间',
+  `activated` TINYINT NOT NULL DEFAULT 0 COMMENT '激活状态（0 未激活 1 激活）',
   `user_status` TINYINT NOT NULL DEFAULT 1 COMMENT '用户状态（0 禁用 1 启用）',
   PRIMARY KEY (id)
 )ENGINE=INNODB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='博客用户表';
