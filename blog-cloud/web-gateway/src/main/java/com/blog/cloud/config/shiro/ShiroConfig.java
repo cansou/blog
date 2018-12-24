@@ -2,6 +2,7 @@ package com.blog.cloud.config.shiro;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
@@ -58,6 +59,7 @@ public class ShiroConfig {
 
     /**
      * 身份认证realm
+     *
      * @return
      */
     @Bean
@@ -77,9 +79,8 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public RetryLimitCredentialsMatcher hashedCredentialsMatcher() {
-        RetryLimitCredentialsMatcher hashedCredentialsMatcher = new RetryLimitCredentialsMatcher();
-        hashedCredentialsMatcher.setLgoinRetryCache(cacheManager().getCache("loginRetryCache"));
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
         hashedCredentialsMatcher.setHashAlgorithmName("MD5");// 散列算法, 与注册时使用的散列算法相同
         hashedCredentialsMatcher.setHashIterations(2);// 散列次数, 与注册时使用的散列册数相同
         hashedCredentialsMatcher.setStoredCredentialsHexEncoded(true);// 生成16进制, 与注册时的生成格式相同
