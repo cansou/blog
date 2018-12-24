@@ -1,9 +1,9 @@
 package com.blog.cloud.controller;
 
 import com.blog.cloud.common.BaseController;
+import com.blog.cloud.domain.user.BlogUserAddDto;
 import com.blog.cloud.http.RestResultBuilder;
-import com.blog.cloud.pojo.user.BlogUser;
-import com.blog.cloud.service.IUserService;
+import com.blog.cloud.service.IAuthorizationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -14,25 +14,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
+@RequestMapping("/manage/user")
 @RestController
-@RequestMapping(value = "/user")
-@Api(value = "UserController", description = "用户管理")
-public class UserController extends BaseController {
+@Api(value = "ManageUserController", description = "管理用户接口")
+public class ManageUserController extends BaseController {
 
     @Autowired
-    private IUserService userService;
+    private IAuthorizationService authorizationService;
 
     /**
-     * 用户注册接口
-     * @param user
+     * 用户注册
+     *
+     * @param userAddDto 用户注册对象
      * @return
      */
-    @PostMapping("/register")
+    @PostMapping(value = "/registerUser")
     @ApiOperation(value = "用户注册", notes = "用户注册")
-    public RestResultBuilder register (@RequestBody BlogUser user) {
-        Integer registerUser = userService.registerUser(user);
-        return successBuild(registerUser);
+    public RestResultBuilder registerUser(@RequestBody BlogUserAddDto userAddDto){
+        return authorizationService.registerUser(userAddDto);
     }
-
 
 }

@@ -1,9 +1,9 @@
 package com.blog.cloud.service;
 
-import com.blog.cloud.domain.user.BlogUserAddDto;
+import com.blog.cloud.pojo.user.BlogUser;
 
 public interface IUserService {
 
-    Integer registerUser (BlogUserAddDto userAddDto);
+    Integer registerUser (BlogUser user);
 
 }

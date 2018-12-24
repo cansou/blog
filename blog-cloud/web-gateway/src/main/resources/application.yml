@@ -23,10 +23,10 @@ zuul:
     socket-timeout-millis: 60000
     connect-timeout-millis: 60000
   routes:
-    api-blog:
+    api-blog-server:
       path: /blog/**
       serviceId: blog-server
-    api-user:
+    api-user-server:
       path: /user/**
       serviceId: user-server
 

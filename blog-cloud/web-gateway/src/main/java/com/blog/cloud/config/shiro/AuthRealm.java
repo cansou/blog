@@ -31,7 +31,7 @@ public class AuthRealm extends AuthorizingRealm {
             throw new AuthenticationException("token invalid");
         }
 
-        BlogUser user = authorizationService.getManageAdminByUsername(username);
+        BlogUser user = authorizationService.getBlogUserByUsername(username);
         if (user == null) {
             throw new UnknownAccountException();
         }
