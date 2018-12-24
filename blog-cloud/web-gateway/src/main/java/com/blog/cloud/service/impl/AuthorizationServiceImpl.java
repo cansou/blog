@@ -10,7 +10,6 @@ import com.blog.cloud.service.IAuthorizationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service("authorizationService")
 public class AuthorizationServiceImpl implements IAuthorizationService {
@@ -28,8 +27,8 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
     }
 
     public BlogUser getBlogUserByUsername(String username) {
-
-        return null;
+        RestResultBuilder<BlogUser> resultBuilder = userServerClient.getBlogUserByUsername(username);
+        return resultBuilder.getData();
     }
 
     public void lockedManageAdminByUsername(String username){

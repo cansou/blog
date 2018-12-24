@@ -1,6 +1,5 @@
 package com.blog.cloud.config.shiro;
 
-import com.blog.cloud.config.jwt.JWTConfig;
 import com.blog.cloud.pojo.user.BlogUser;
 import com.blog.cloud.service.IAuthorizationService;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +7,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
@@ -22,27 +22,20 @@ public class AuthRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         //1.把AuthenticationToken转换为UsernamePasswordToken
-        String token = (String) auth.getCredentials();
-        // 解密获得username，用于和数据库进行对比
-        String username = JWTConfig.getUsername(token);
-        if (username == null) {
-            throw new AuthenticationException("token invalid");
-        }
+        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        String username = token.getUsername();
+        log.info("登录用户： " + username);
 
         BlogUser user = authorizationService.getBlogUserByUsername(username);
         if (user == null) {
             throw new UnknownAccountException();
         }
-        if(!JWTConfig.verify(token, username, user.getPassword())){
-            throw new AuthenticationException("Username or password error");
-        }
-
-        /*new SimpleAuthenticationInfo(manageAdmin.getUsername(), manageAdmin.getPassword(),
-                ByteSource.Util.bytes(manageAdmin.getSalt()), getName());*/
-
-        return new SimpleAuthenticationInfo(token, token, "my_realm");
+//        AuthenticationInfo info = new SimpleAuthenticationInfo(token, token, "my_realm");
+        AuthenticationInfo info = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(),
+                ByteSource.Util.bytes(user.getSalt()), getName());
+        return info;
 
     }
 

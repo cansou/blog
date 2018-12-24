@@ -26,7 +26,7 @@ public class JWTConfig {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withClaim("username", username)
                     .build();
-            DecodedJWT jwt = verifier.verify(token);
+            verifier.verify(token);
             return true;
         } catch (Exception exception) {
             return false;
@@ -54,7 +54,7 @@ public class JWTConfig {
      * @param secret   用户的密码
      * @return 加密的token
      */
-    public static String sign(String username, String secret) {
+    public static String createToken(String username, String secret) {
         Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
         Algorithm algorithm = Algorithm.HMAC256(secret);
         // 附带username信息

@@ -1,6 +1,7 @@
 package com.blog.cloud.config.shiro;
 
 
+import com.blog.cloud.config.jwt.JWTFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -9,6 +10,7 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +22,12 @@ import java.util.Map;
 @Slf4j
 @Configuration
 public class ShiroConfig {
+
+    @Value("${spring.redis.host}")
+    private String host;
+
+    @Value("${spring.redis.password}")
+    private String password;
 
     @Bean
     public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager) {
@@ -36,10 +44,11 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/api/user/logout", "anon");
         filterChainDefinitionMap.put("/api/user/registerAdmin", "anon");
         filterChainDefinitionMap.put("/api/user/valicode", "anon");
-        filterChainDefinitionMap.put("/**", "anyRoles");
+        filterChainDefinitionMap.put("/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         Map<String, Filter> filters = new HashMap<>();
+        filters.put("jwt", new JWTFilter());
 //        filters.put("anyRoles", new AnyRolesAuthorizationFilter());
         shiroFilterFactoryBean.setFilters(filters);
         return shiroFilterFactoryBean;
@@ -97,8 +106,8 @@ public class ShiroConfig {
 
     public RedisManager redisManager() {
         RedisManager redisManager = new RedisManager();
-        redisManager.setHost("");
-        redisManager.setPassword("");
+        redisManager.setHost(host);
+        redisManager.setPassword(password);
         redisManager.setDatabase(1);
         return redisManager;
     }

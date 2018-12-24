@@ -21,4 +21,10 @@ public class UserServiceImpl extends ServiceImpl<IBlogUserMapper, BlogUser> impl
         return baseMapper.insert(user);
     }
 
+    @Override
+    public BlogUser getBlogUserByUsername(String username) {
+        BlogUser user = new BlogUser();
+        user.setUsername(username);
+        return baseMapper.selectOne(user);
+    }
 }

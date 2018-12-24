@@ -8,10 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -32,6 +29,17 @@ public class UserController extends BaseController {
     public RestResultBuilder register (@RequestBody BlogUser user) {
         Integer registerUser = userService.registerUser(user);
         return successBuild(registerUser);
+    }
+    /**
+     * 用户注册接口
+     * @param username
+     * @return
+     */
+    @GetMapping("/getBlogUserByUsername/{username}")
+    @ApiOperation(value = "用户注册", notes = "用户注册")
+    public RestResultBuilder getBlogUserByUsername (@PathVariable("username") String username) {
+        BlogUser user = userService.getBlogUserByUsername(username);
+        return successBuild(user);
     }
 
 

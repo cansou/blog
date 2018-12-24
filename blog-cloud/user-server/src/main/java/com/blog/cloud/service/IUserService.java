@@ -6,4 +6,6 @@ public interface IUserService {
 
     Integer registerUser (BlogUser user);
 
+    BlogUser getBlogUserByUsername(String username);
+
 }

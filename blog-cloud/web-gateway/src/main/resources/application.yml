@@ -8,7 +8,12 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
-
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: luo19950105.
+    timeout: 10000ms
 eureka:
   client:
     service-url:
