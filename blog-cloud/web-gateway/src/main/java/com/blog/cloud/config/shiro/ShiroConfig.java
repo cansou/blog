@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,9 +42,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/druid/**", "anon");
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/manage/user/login", "anon");
-        filterChainDefinitionMap.put("/api/user/logout", "anon");
         filterChainDefinitionMap.put("/manage/user/registerUser", "anon");
-        filterChainDefinitionMap.put("/api/user/valicode", "anon");
         filterChainDefinitionMap.put("/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
@@ -58,7 +57,7 @@ public class ShiroConfig {
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm.
-        securityManager.setRealm(authRealm());
+        securityManager.setRealms(Arrays.asList(authRealm(), jwtRealm()));
         // 设置自定义缓存  使用redis
         securityManager.setCacheManager(cacheManager());
         // 自定义session管理 使用redis
@@ -77,6 +76,18 @@ public class ShiroConfig {
         // 设置加密算法
         authRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return authRealm;
+    }
+
+    /**
+     * JWTrealm
+     *
+     * @return
+     */
+    @Bean
+    public JWTRealm jwtRealm() {
+        JWTRealm jwtRealm = new JWTRealm();
+        // 设置加密算法
+        return jwtRealm;
     }
 
     /**

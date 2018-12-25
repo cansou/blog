@@ -2,7 +2,7 @@ package com.blog.cloud.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.blog.cloud.common.BaseController;
-import com.blog.cloud.config.jwt.JWTConfig;
+import com.blog.cloud.config.jwt.JWTUtil;
 import com.blog.cloud.domain.user.BlogUserAddDto;
 import com.blog.cloud.http.RestResultBuilder;
 import com.blog.cloud.pojo.user.BlogUser;
@@ -71,13 +71,12 @@ public class ManageUserController extends BaseController {
         } catch (AuthenticationException ae) {
             log.info("对用户[" + username + "]进行登录验证..验证未通过,账户已锁定");
             errmsg = "对用户[" + username + "]进行登录验证..验证未通过,账户已锁定,请通知超级管理员解锁";
-            //ae.printStackTrace();
         }
         if (subject.isAuthenticated()) {
             errmsg = "用户[" + username + "]进行登录验证..验证通过";
             BlogUser admin = authorizationService.getBlogUserByUsername(username);
                     // Create auth token
-            String jwt = JWTConfig.createToken(admin.getUsername(), admin.getPassword());
+            String jwt = JWTUtil.createToken(admin.getUsername(), admin.getPassword());
             JSONObject jsonObject = new JSONObject();
             if (jwt != null) {
                 jsonObject.put("token", jwt);

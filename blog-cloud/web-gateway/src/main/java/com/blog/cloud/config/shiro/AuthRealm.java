@@ -17,6 +17,11 @@ public class AuthRealm extends AuthorizingRealm {
     private IAuthorizationService authorizationService;
 
     @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof UsernamePasswordToken;
+    }
+
+    @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         return null;
     }
@@ -32,9 +37,7 @@ public class AuthRealm extends AuthorizingRealm {
         if (user == null) {
             throw new UnknownAccountException();
         }
-//        AuthenticationInfo info = new SimpleAuthenticationInfo(token, token, "my_realm");
-        AuthenticationInfo info = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(),
-                ByteSource.Util.bytes(user.getSalt()), getName());
+        AuthenticationInfo info = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), ByteSource.Util.bytes(user.getSalt()), getName());
         return info;
 
     }
