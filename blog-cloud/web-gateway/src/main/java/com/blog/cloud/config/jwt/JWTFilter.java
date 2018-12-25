@@ -1,6 +1,8 @@
 package com.blog.cloud.config.jwt;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,6 +34,9 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String authorization = httpServletRequest.getHeader("token");
+        if (JWTUtil.isTokenExpired(authorization)) {
+            throw new AuthenticationException("token 失效了");
+        }
         JWTToken token = new JWTToken(authorization);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         getSubject(request, response).login(token);
@@ -54,10 +59,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             try {
                 executeLogin(request, response);
             } catch (Exception e) {
+                log.info("token 失效了");
                 response401(request, response);
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -81,14 +87,21 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     /**
      * 将非法请求跳转到 /401
      */
-    private void response401(ServletRequest req, ServletResponse resp) {
+    private void response401(ServletRequest request, ServletResponse response) {
         try {
-            HttpServletResponse httpServletResponse = (HttpServletResponse) resp;
-            httpServletResponse.sendRedirect("/401");
+            HttpServletRequest req = (HttpServletRequest) request;
+            String authorization = req.getHeader("token");
+            HttpServletResponse res = (HttpServletResponse) response;
+            res.setContentType("application/json;charset=utf-8;");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("asda", "dasdas");
+            jsonObject.put("token", authorization);
+            res.getWriter().write(jsonObject.toJSONString());
+            res.getWriter().flush();
+            res.getWriter().close();
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
-
 
 }

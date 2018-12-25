@@ -37,9 +37,10 @@ public class JWTRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         JWTToken jwtToken = (JWTToken) authenticationToken;
         String token = jwtToken.getToken();
+        String username = JWTUtil.getUsername(token);
         BlogUser user = authorizationService.getBlogUserByUsername(JWTUtil.getUsername(token));
         if (user == null) {
-            throw new AuthenticationException("token过期，请重新登录");
+            throw new AuthenticationException("用户异常，未查到用户信息，请检查是否存在" + username + "该用户");
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user, user.getPassword(), getName());
         return authenticationInfo;
