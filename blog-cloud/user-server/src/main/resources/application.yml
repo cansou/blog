@@ -12,6 +12,9 @@ eureka:
 
 
 spring:
+  mvc:
+    servlet:
+      load-on-startup: 1
   application:
     name: user-server
 #  redis:

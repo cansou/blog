@@ -12,6 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 
 @Slf4j
 public class JWTFilter extends BasicHttpAuthenticationFilter {
@@ -60,7 +61,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 executeLogin(request, response);
             } catch (Exception e) {
                 log.info("token 失效了");
-                response401(request, response);
+                refreshTokenResponse(request, response);
             }
         }
         return false;
@@ -87,7 +88,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     /**
      * 将非法请求跳转到 /401
      */
-    private void response401(ServletRequest request, ServletResponse response) {
+    private void refreshTokenResponse(ServletRequest request, ServletResponse response) {
         try {
             HttpServletRequest req = (HttpServletRequest) request;
             String authorization = req.getHeader("token");
@@ -96,9 +97,9 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("asda", "dasdas");
             jsonObject.put("token", authorization);
-            res.getWriter().write(jsonObject.toJSONString());
-            res.getWriter().flush();
-            res.getWriter().close();
+            OutputStream out = res.getOutputStream();
+            out.write(jsonObject.toJSONString().getBytes());
+            out.close();
         } catch (IOException e) {
             log.error(e.getMessage());
         }

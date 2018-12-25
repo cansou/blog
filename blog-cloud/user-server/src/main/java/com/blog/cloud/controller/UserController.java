@@ -5,6 +5,8 @@ import com.blog.cloud.http.RestResultBuilder;
 import com.blog.cloud.pojo.user.BlogUser;
 import com.blog.cloud.service.IUserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +33,16 @@ public class UserController extends BaseController {
         return successBuild(registerUser);
     }
     /**
-     * 用户注册接口
+     * 获取用户信息
      * @param username
      * @return
      */
     @GetMapping("/getBlogUserByUsername/{username}")
-    @ApiOperation(value = "用户注册", notes = "用户注册")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "token", value = "Token", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "path", name = "username", value = "用户名", required = true, dataType = "String"),
+    })
+    @ApiOperation(value = "获取用户信息", notes = "获取用户信息")
     public RestResultBuilder getBlogUserByUsername (@PathVariable("username") String username) {
         BlogUser user = userService.getBlogUserByUsername(username);
         return successBuild(user);
