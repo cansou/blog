@@ -40,9 +40,9 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/druid/**", "anon");
         filterChainDefinitionMap.put("/static/**", "anon");
-        filterChainDefinitionMap.put("/api/user/login", "anon");
+        filterChainDefinitionMap.put("/manage/user/login", "anon");
         filterChainDefinitionMap.put("/api/user/logout", "anon");
-        filterChainDefinitionMap.put("/api/user/registerAdmin", "anon");
+        filterChainDefinitionMap.put("/manage/user/registerUser", "anon");
         filterChainDefinitionMap.put("/api/user/valicode", "anon");
         filterChainDefinitionMap.put("/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
