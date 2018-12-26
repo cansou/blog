@@ -74,13 +74,14 @@ public class UserLoginController extends BaseController {
         }
         if (subject.isAuthenticated()) {
             errmsg = "用户[" + username + "]进行登录验证..验证通过";
-            BlogUser admin = authorizationService.getBlogUserByUsername(username);
-                    // Create auth token
-            String jwt = JWTUtil.createToken(admin.getUsername(), admin.getPassword());
+            log.info(errmsg);
+            BlogUser user = authorizationService.getBlogUserByUsername(username);
+            // Create auth token
+            String jwt = JWTUtil.createToken(user.getUsername(), user.getPassword());
             JSONObject jsonObject = new JSONObject();
             if (jwt != null) {
                 jsonObject.put("token", jwt);
-                jsonObject.put("manageAdmin", admin);
+                jsonObject.put("user", user);
             }
             return successBuild(jsonObject);
         }
