@@ -45,8 +45,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/webjars/springfox-swagger-ui/**", "anon");
         filterChainDefinitionMap.put("/druid/**", "anon");
         filterChainDefinitionMap.put("/static/**", "anon");
-        filterChainDefinitionMap.put("/manage/user/login", "anon");
-        filterChainDefinitionMap.put("/manage/user/registerUser", "anon");
+        filterChainDefinitionMap.put("/login/user/login", "anon");
+        filterChainDefinitionMap.put("/login/user/registerUser", "anon");
         filterChainDefinitionMap.put("/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RequestMapping("/manage/user")
+@RequestMapping("/login/user")
 @RestController
-@Api(value = "ManageUserController", description = "管理用户接口")
-public class ManageUserController extends BaseController {
+@Api(value = "UserLoginController", description = "管理用户接口")
+public class UserLoginController extends BaseController {
 
     @Autowired
     private IAuthorizationService authorizationService;
