@@ -21,11 +21,22 @@ public class AuthRealm extends AuthorizingRealm {
         return token instanceof UsernamePasswordToken;
     }
 
+    /**
+     * 鉴权
+     * @param principals
+     * @return
+     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         return null;
     }
 
+    /**
+     * 登陆认证
+     * @param authenticationToken
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         //1.把AuthenticationToken转换为UsernamePasswordToken
@@ -37,9 +48,9 @@ public class AuthRealm extends AuthorizingRealm {
         if (user == null) {
             throw new UnknownAccountException();
         }
+        //生成凭据验证信息  SimpleCredentialsMatcher.doCredentialsMatch() 进行验证
         AuthenticationInfo info = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), ByteSource.Util.bytes(user.getSalt()), getName());
         return info;
-
     }
 
 }
