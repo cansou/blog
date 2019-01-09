@@ -1,0 +1,11 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.blog.cloud.config.RedisCacheAutoConfiguration",
+      "name": "",
+      "type": "com.blog.cloud.config.RedisCacheAutoConfiguration"
+    }
+  ],
+  "properties": []
+}

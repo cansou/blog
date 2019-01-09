@@ -1,4 +1,4 @@
-package com.blog.cloud.config.jwt;
+package com.blog.cloud.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

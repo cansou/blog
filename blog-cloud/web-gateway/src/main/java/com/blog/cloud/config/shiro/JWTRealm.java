@@ -1,10 +1,10 @@
 package com.blog.cloud.config.shiro;
 
-import com.blog.cloud.config.jwt.JWTUtil;
 import com.blog.cloud.config.jwt.JWTCredentialsMatcher;
 import com.blog.cloud.config.jwt.JWTToken;
 import com.blog.cloud.pojo.user.BlogUser;
 import com.blog.cloud.service.IAuthorizationService;
+import com.blog.cloud.utils.JWTUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;

@@ -8,6 +8,7 @@ import com.blog.cloud.domain.article.BlogArticleAddDto;
 import com.blog.cloud.http.RestResultBuilder;
 import com.blog.cloud.pojo.article.BlogArticle;
 import com.blog.cloud.service.IBlogArticleService;
+import com.blog.cloud.utils.DateUtil;
 import com.blog.cloud.utils.SendMailUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -36,9 +37,14 @@ public class BlogArticleServiceImpl extends ServiceImpl<IBlogArticleMapper, Blog
 	@Override
 	public RestResultBuilder addBlogArticle(BlogArticleAddDto addDto) {
 		RestResultBuilder builder = new RestResultBuilder<>(HttpStatus.OK.value(), "添加成功");
+		Long currentTimeMillis = DateUtil.getCurrentTimeMillis();
 
 		BlogArticle article = new BlogArticle();
 		BeanUtils.copyProperties(addDto, article);
+		article.setCreateTime(currentTimeMillis);
+		article.setUpdateTime(currentTimeMillis);
+		article.setArticleStatus(1);
+		article.setDelStatus(0);
 		Integer count = baseMapper.insert(article);
 
 		if(count == 0){

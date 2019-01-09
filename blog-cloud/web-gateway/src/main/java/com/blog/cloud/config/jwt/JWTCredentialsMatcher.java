@@ -2,6 +2,7 @@ package com.blog.cloud.config.jwt;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.blog.cloud.pojo.user.BlogUser;
+import com.blog.cloud.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;

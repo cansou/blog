@@ -1,6 +1,6 @@
 package com.blog.cloud.service.impl;
 
-import com.blog.cloud.pojo.SysUser;
+import com.blog.cloud.pojo.user.BlogUser;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.User;
@@ -15,9 +15,9 @@ import java.util.Collections;
 @Getter
 @Setter
 public class CustomUserDetails extends User {
-    private SysUser sysUser;
+    private BlogUser sysUser;
 
-    public CustomUserDetails(SysUser sysUser) {
+    public CustomUserDetails(BlogUser sysUser) {
         super(sysUser.getUsername(), sysUser.getPassword(), true, true, true, true, Collections.EMPTY_SET);
         this.sysUser = sysUser;
     }

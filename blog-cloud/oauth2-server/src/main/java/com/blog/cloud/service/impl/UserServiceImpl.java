@@ -1,6 +1,6 @@
 package com.blog.cloud.service.impl;
 
-import com.blog.cloud.pojo.SysUser;
+import com.blog.cloud.pojo.user.BlogUser;
 import com.blog.cloud.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        SysUser user = new SysUser();
+        BlogUser user = new BlogUser();
         user.setUsername("10086");
         user.setPassword("123456");
         return new CustomUserDetails(user);

@@ -1,6 +1,7 @@
 package com.blog.cloud.config.jwt;
 
 import com.alibaba.fastjson.JSONObject;
+import com.blog.cloud.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;

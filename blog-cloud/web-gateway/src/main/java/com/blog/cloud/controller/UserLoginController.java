@@ -2,11 +2,12 @@ package com.blog.cloud.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.blog.cloud.common.BaseController;
-import com.blog.cloud.config.jwt.JWTUtil;
 import com.blog.cloud.domain.user.BlogUserAddDto;
 import com.blog.cloud.http.RestResultBuilder;
 import com.blog.cloud.pojo.user.BlogUser;
 import com.blog.cloud.service.IAuthorizationService;
+import com.blog.cloud.utils.JWTUtil;
+import com.blog.cloud.utils.RedisUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,9 @@ public class UserLoginController extends BaseController {
 
     @Autowired
     private IAuthorizationService authorizationService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 用户注册
