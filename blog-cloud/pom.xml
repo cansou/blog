@@ -17,6 +17,7 @@
         <module>eureka-server</module>
         <module>web-gateway</module>
         <module>blog-server</module>
+        <module>wechat-server</module>
     </modules>
 
     <parent>
@@ -33,6 +34,7 @@
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
         <druid.version>1.1.11</druid.version>
         <alibaba.boot.version>1.1.10</alibaba.boot.version>
+        <weixin.version>3.3.0</weixin.version>
     </properties>
 
     <dependencies>
