@@ -1,0 +1,75 @@
+server:
+  port: 9600
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9100/eureka/
+  instance:
+    instanceId: ${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 5
+
+
+spring:
+  mvc:
+    servlet:
+      load-on-startup: 1
+  application:
+    name: wechat-robot
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    timeout: 10000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1
+        min-idle: 0
+  http:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+        isolation:
+          thread:
+            timeoutInMilliseconds: 600000
+
+wechat:
+  ua: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36
+  url:
+    entry: https://wx.qq.com/
+    login-base: https://login.weixin.qq.com
+    path-base: /cgi-bin/mmwebwx-bin
+    uuid: ${wechat.url.login-base}/jslogin?appid=wx782c26e4c19acffb&fun=new&lang=zh_CN&_=%s
+    qrcode: ${wechat.url.login-base}/qrcode
+    login: ${wechat.url.login-base}${wechat.url.path-base}/login?loginicon=true&uuid=%s&tip=0&r=%s&_=%s
+    init: ${wechat.url.path-base}/webwxinit?r=%s
+    statreport: ${wechat.url.entry}${wechat.url.path-base}/webwxstatreport?fun=new
+    status-notify: ${wechat.url.path-base}/webwxstatusnotify
+    sync-heck: ${wechat.url.path-base}/synccheck
+    sync: ${wechat.url.path-base}/webwxsync?sid=%s&skey=%s
+    get-contact: ${wechat.url.path-base}/webwxgetcontact?r=%s&seq=%s&skey=%s
+    send-msg: ${wechat.url.path-base}/webwxsendmsg
+    upload-media: ${wechat.url.path-base}/webwxuploadmedia?f=json
+    get-msg-img: ${wechat.url.path-base}/webwxgetmsgimg?&MsgID=%s&skey=%s
+    get-voice: ${wechat.url.path-base}/webwxgetvoice
+    get-video: ${wechat.url.path-base}/webwxgetvideo
+    push-login: ${wechat.url.path-base}/webwxpushloginurl
+    logout: ${wechat.url.path-base}/webwxlogout?redirect=1&type=1&skey=%s
+    batch-get-contact: ${wechat.url.path-base}/webwxbatchgetcontact?type=ex&r=%s
+    op-log: ${wechat.url.path-base}/webwxoplog
+    verify-user: ${wechat.url.path-base}/webwxverifyuser
+    get-media: ${wechat.url.path-base}/webwxgetmedia
+    create-chatroom: ${wechat.url.path-base}/webwxcreatechatroom?r=%s
+    delete-chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=delmember
+    add_chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=addmember

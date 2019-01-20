@@ -40,6 +40,9 @@ zuul:
     api-user-server:
       path: /user/**
       serviceId: user-server
+    api-wechat-server:
+      path: /wechat/**
+      serviceId: wechat-server
 
 blog-server:
   ribbon:
