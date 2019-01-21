@@ -159,7 +159,7 @@ public class WechatApiServiceInternal {
      *
      * @param uuid
      * @return hostUrl and redirectUrl
-     * @throws WechatException if the response doesn't contain code
+     * @throws RuntimeException if the response doesn't contain code
      */
     public LoginResponse login(String uuid) {
         log.info("login params -> " + uuid);
@@ -249,7 +249,7 @@ public class WechatApiServiceInternal {
     public InitResponse init(String hostUrl, BaseRequest baseRequest, String pass_ticket) {
         log.info("init params -> " + hostUrl + " -> " + baseRequest);
         long time = System.currentTimeMillis();
-        String url = hostUrl + String.format(properties.getUrl().getInit(), -((int) time + 1)) + "&pass_ticket=" + pass_ticket;
+        String url = hostUrl + String.format(properties.getUrl().getInit(), -((int) time + 1), pass_ticket);
 
         CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
         Date maxDate = new Date(Long.MAX_VALUE);
@@ -270,14 +270,18 @@ public class WechatApiServiceInternal {
         //https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=-1809623231
 
 
-        JSONObject payload = new JSONObject();
-        payload.put("BaseRequest", baseRequest);
-        String s = HttpUtils.httpsPostForPayload(url, customHeader.toSingleValueMap(), payload);
-
-        /*ResponseEntity<String> responseEntity
-                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);*/
+        /*JSONObject payload = new JSONObject();
+        JSONObject req= new JSONObject();
+        req.put("Uin", baseRequest.getUin());
+        req.put("Sid", baseRequest.getSid());
+        req.put("Skey", baseRequest.getSkey());
+        payload.put("BaseRequest", req);
+        String s = HttpUtils.httpsPostForPayload(url, null, payload);
+        System.out.println(s);*/
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
         try {
-            return jsonMapper.readValue(WechatUtils.textDecode(s), InitResponse.class);
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), InitResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

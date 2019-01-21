@@ -38,8 +38,8 @@ public class LoginServiceImpl implements LoginService {
 
         //获取唯一ID
         String uuid = internal.getUUID();
-        log.info(uuid);
         log.info("[1] uuid completed");
+        log.info("[1] uuid completed " + uuid);
 
         //生成登陆二维码
         byte[] qrData = internal.getQR(uuid);
@@ -116,6 +116,8 @@ public class LoginServiceImpl implements LoginService {
         cacheConfiguration.setOwner(initResponse.getUser());
         log.info("[7] init completed");
         log.info("[7] init initResponse" + initResponse);
+
+
     }
 
 }

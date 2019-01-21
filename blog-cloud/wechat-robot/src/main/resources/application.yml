@@ -53,7 +53,7 @@ wechat:
     uuid: ${wechat.url.login-base}/jslogin?appid=wx782c26e4c19acffb&fun=new&lang=zh_CN&_=%s
     qrcode: ${wechat.url.login-base}/qrcode
     login: ${wechat.url.login-base}${wechat.url.path-base}/login?loginicon=true&uuid=%s&tip=0&r=%s&_=%s
-    init: ${wechat.url.path-base}/webwxinit?r=%s
+    init: ${wechat.url.path-base}/webwxinit?r=%s&pass_ticket=%s
     statreport: ${wechat.url.entry}${wechat.url.path-base}/webwxstatreport?fun=new
     status-notify: ${wechat.url.path-base}/webwxstatusnotify
     sync-heck: ${wechat.url.path-base}/synccheck

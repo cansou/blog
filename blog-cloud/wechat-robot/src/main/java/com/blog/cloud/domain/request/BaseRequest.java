@@ -16,20 +16,20 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseRequest {
 
-    @ApiModelProperty(name = "Uin", value = "Uin")
     @JsonProperty
+    @ApiModelProperty(name = "Uin", value = "Uin")
     private String Uin;
 
-    @ApiModelProperty(name = "Sid", value = "Sid")
     @JsonProperty
+    @ApiModelProperty(name = "Sid", value = "Sid")
     private String Sid;
 
-    @ApiModelProperty(name = "Skey", value = "Skey")
     @JsonProperty
+    @ApiModelProperty(name = "Skey", value = "Skey")
     private String Skey;
 
-    @ApiModelProperty(name = "DeviceID", value = "DeviceID")
     @JsonProperty
+    @ApiModelProperty(name = "DeviceID", value = "DeviceID")
     private String DeviceID;
 
 }

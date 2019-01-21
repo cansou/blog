@@ -18,6 +18,7 @@
         <module>web-gateway</module>
         <module>blog-server</module>
         <module>wechat-server</module>
+        <module>wechat-robot</module>
     </modules>
 
     <parent>

@@ -11,8 +11,8 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class WechatHttpResponseBase {
 
-    @ApiModelProperty(name = "BaseResponse", value = "BaseResponse")
     @JsonProperty
+    @ApiModelProperty(name = "BaseResponse", value = "BaseResponse")
     private BaseResponse BaseResponse;
 
 }
