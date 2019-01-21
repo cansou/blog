@@ -55,10 +55,10 @@ wechat:
     login: ${wechat.url.login-base}${wechat.url.path-base}/login?loginicon=true&uuid=%s&tip=0&r=%s&_=%s
     init: ${wechat.url.path-base}/webwxinit?r=%s&pass_ticket=%s
     statreport: ${wechat.url.entry}${wechat.url.path-base}/webwxstatreport?fun=new
-    status-notify: ${wechat.url.path-base}/webwxstatusnotify
+    status-notify: ${wechat.url.path-base}/webwxstatusnotify?pass_ticket=%s
     sync-heck: ${wechat.url.path-base}/synccheck
     sync: ${wechat.url.path-base}/webwxsync?sid=%s&skey=%s
-    get-contact: ${wechat.url.path-base}/webwxgetcontact?r=%s&seq=%s&skey=%s
+    get-contact: ${wechat.url.path-base}/webwxgetcontact?r=%s&seq=%s&skey=%s&pass_ticket=%s&lang=zh_CN
     send-msg: ${wechat.url.path-base}/webwxsendmsg
     upload-media: ${wechat.url.path-base}/webwxuploadmedia?f=json
     get-msg-img: ${wechat.url.path-base}/webwxgetmsgimg?&MsgID=%s&skey=%s

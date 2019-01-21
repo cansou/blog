@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 /**
  * @author lxw
@@ -120,13 +121,22 @@ public class LoginServiceImpl implements LoginService {
         log.info("[7] init completed");
         log.info("[7] init initResponse" + initResponse);
 
-        StatusNotifyResponse statusNotifyResponse = internal.statusNotify(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest(), cacheConfiguration.getOwner().getUserName(), StatusNotifyCode.INITED.getCode());
+        StatusNotifyResponse statusNotifyResponse = internal.statusNotify(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest(),
+                cacheConfiguration.getOwner().getUserName(), StatusNotifyCode.INITED.getCode(), cacheConfiguration.getPassTicket());
         WechatUtils.checkBaseResponse(statusNotifyResponse);
         log.info("[8] status notify completed");
         log.info("[8] status notify completed " + statusNotifyResponse);
 
         long seq = 0;
-        GetContactResponse contact = internal.getContact(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest().getSkey(), seq);
+        GetContactResponse contact = internal.getContact(cacheConfiguration.getHostUrl(),
+                cacheConfiguration.getBaseRequest().getSkey(), seq, cacheConfiguration.getPassTicket());
+        WechatUtils.checkBaseResponse(contact);
+        log.info("[*] getContactResponse seq = " + contact.getSeq());
+        log.info("[*] getContactResponse memberCount = " + contact.getMemberCount());
+        seq = contact.getSeq();
+        cacheConfiguration.getIndividuals().addAll(contact.getMemberList().stream().filter(WechatUtils::isIndividual).collect(Collectors.toSet()));
+        cacheConfiguration.getMediaPlatforms().addAll(contact.getMemberList().stream().filter(WechatUtils::isMediaPlatform).collect(Collectors.toSet()));
+        log.info("[9] get contact completed");
 
 
     }

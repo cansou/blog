@@ -290,9 +290,9 @@ public class WechatApiServiceInternal {
      * @return the http response body
      * @throws IOException if the http response body can't be convert to {@link StatusNotifyResponse}
      */
-    public StatusNotifyResponse statusNotify(String hostUrl, BaseRequest baseRequest, String userName, int code) {
+    public StatusNotifyResponse statusNotify(String hostUrl, BaseRequest baseRequest, String userName, int code, String pass_ticket) {
         String rnd = String.valueOf(System.currentTimeMillis());
-        final String url = properties.getUrl().getEntry() + String.format(properties.getUrl().getStatusNotify(), hostUrl);
+        final String url = hostUrl + String.format(properties.getUrl().getStatusNotify(), pass_ticket);
         StatusNotifyRequest request = new StatusNotifyRequest();
         request.setBaseRequest(baseRequest);
         request.setFromUserName(userName);
@@ -322,9 +322,9 @@ public class WechatApiServiceInternal {
      * @return contact information
      * @throws IOException if the http response body can't be convert to {@link GetContactResponse}
      */
-    public GetContactResponse getContact(String hostUrl, String skey, long seq) {
+    public GetContactResponse getContact(String hostUrl, String skey, long seq, String pass_ticket) {
         long rnd = System.currentTimeMillis();
-        final String url = String.format(properties.getUrl().getGetContact(), hostUrl, rnd, seq, escape(skey));
+        final String url = hostUrl + String.format(properties.getUrl().getGetContact(), rnd, seq, escape(skey), pass_ticket);
         HttpHeaders customHeader = new HttpHeaders();
         customHeader.setAccept(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.ALL));
         customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
