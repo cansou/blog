@@ -1,11 +1,13 @@
 package com.blog.cloud.config;
 
-import com.alibaba.fastjson.JSONObject;
 import com.blog.cloud.domain.request.BaseRequest;
 import com.blog.cloud.domain.request.InitRequest;
 import com.blog.cloud.domain.request.StatReportRequest;
+import com.blog.cloud.domain.request.StatusNotifyRequest;
+import com.blog.cloud.domain.response.GetContactResponse;
 import com.blog.cloud.domain.response.InitResponse;
 import com.blog.cloud.domain.response.LoginResponse;
+import com.blog.cloud.domain.response.StatusNotifyResponse;
 import com.blog.cloud.domain.shared.Token;
 import com.blog.cloud.utils.HeaderUtils;
 import com.blog.cloud.utils.HttpUtils;
@@ -25,6 +27,9 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -265,23 +270,69 @@ public class WechatApiServiceInternal {
         customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
         customHeader.setOrigin(hostUrl);
         HeaderUtils.assign(customHeader, postHeader);
-        customHeader.set("Accept-Language", "zh-CN,zh;q=0.9");
-        //zh-CN,zh;q=0.9
-        //https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=-1809623231
-
-
-        /*JSONObject payload = new JSONObject();
-        JSONObject req= new JSONObject();
-        req.put("Uin", baseRequest.getUin());
-        req.put("Sid", baseRequest.getSid());
-        req.put("Skey", baseRequest.getSkey());
-        payload.put("BaseRequest", req);
-        String s = HttpUtils.httpsPostForPayload(url, null, payload);
-        System.out.println(s);*/
         ResponseEntity<String> responseEntity
                 = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
         try {
             return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), InitResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Notify mobile side once certain actions have been taken on web side.
+     *
+     * @param hostUrl     hostUrl
+     * @param baseRequest baseRequest
+     * @param userName    the userName of the user
+     * @param code        {@link StatusNotifyCode}
+     * @return the http response body
+     * @throws IOException if the http response body can't be convert to {@link StatusNotifyResponse}
+     */
+    public StatusNotifyResponse statusNotify(String hostUrl, BaseRequest baseRequest, String userName, int code) {
+        String rnd = String.valueOf(System.currentTimeMillis());
+        final String url = properties.getUrl().getEntry() + String.format(properties.getUrl().getStatusNotify(), hostUrl);
+        StatusNotifyRequest request = new StatusNotifyRequest();
+        request.setBaseRequest(baseRequest);
+        request.setFromUserName(userName);
+        request.setToUserName(userName);
+        request.setCode(code);
+        request.setClientMsgId(rnd);
+        HttpHeaders customHeader = new HttpHeaders();
+        customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
+        customHeader.setOrigin(hostUrl);
+        HeaderUtils.assign(customHeader, postHeader);
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), StatusNotifyResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Get all the contacts. If the Seq it returns is greater than zero, it means at least one more request is required to fetch all contacts.
+     *
+     * @param hostUrl hostUrl
+     * @param skey    skey
+     * @param seq     seq
+     * @return contact information
+     * @throws IOException if the http response body can't be convert to {@link GetContactResponse}
+     */
+    public GetContactResponse getContact(String hostUrl, String skey, long seq) {
+        long rnd = System.currentTimeMillis();
+        final String url = String.format(properties.getUrl().getGetContact(), hostUrl, rnd, seq, escape(skey));
+        HttpHeaders customHeader = new HttpHeaders();
+        customHeader.setAccept(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.ALL));
+        customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
+        HeaderUtils.assign(customHeader, getHeader);
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), GetContactResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -296,6 +347,15 @@ public class WechatApiServiceInternal {
             cookie.setExpiryDate(expiryDate);
             store.addCookie(cookie);
         });
+    }
+
+    private String escape(String str) {
+        try {
+            return URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }

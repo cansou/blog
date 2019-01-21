@@ -3,10 +3,13 @@ package com.blog.cloud.service.impl;
 import com.blog.cloud.config.CacheConfiguration;
 import com.blog.cloud.config.WechatApiServiceInternal;
 import com.blog.cloud.domain.request.BaseRequest;
+import com.blog.cloud.domain.response.GetContactResponse;
 import com.blog.cloud.domain.response.InitResponse;
 import com.blog.cloud.domain.response.LoginResponse;
+import com.blog.cloud.domain.response.StatusNotifyResponse;
 import com.blog.cloud.domain.shared.Token;
 import com.blog.cloud.enums.LoginCode;
+import com.blog.cloud.enums.StatusNotifyCode;
 import com.blog.cloud.service.LoginService;
 import com.blog.cloud.utils.QRCodeUtils;
 import com.blog.cloud.utils.WechatUtils;
@@ -116,6 +119,14 @@ public class LoginServiceImpl implements LoginService {
         cacheConfiguration.setOwner(initResponse.getUser());
         log.info("[7] init completed");
         log.info("[7] init initResponse" + initResponse);
+
+        StatusNotifyResponse statusNotifyResponse = internal.statusNotify(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest(), cacheConfiguration.getOwner().getUserName(), StatusNotifyCode.INITED.getCode());
+        WechatUtils.checkBaseResponse(statusNotifyResponse);
+        log.info("[8] status notify completed");
+        log.info("[8] status notify completed " + statusNotifyResponse);
+
+        long seq = 0;
+        GetContactResponse contact = internal.getContact(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest().getSkey(), seq);
 
 
     }
