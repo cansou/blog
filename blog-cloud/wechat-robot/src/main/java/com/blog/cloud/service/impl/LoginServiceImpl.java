@@ -3,14 +3,13 @@ package com.blog.cloud.service.impl;
 import com.blog.cloud.config.CacheConfiguration;
 import com.blog.cloud.config.WechatApiServiceInternal;
 import com.blog.cloud.domain.request.BaseRequest;
-import com.blog.cloud.domain.response.GetContactResponse;
-import com.blog.cloud.domain.response.InitResponse;
-import com.blog.cloud.domain.response.LoginResponse;
-import com.blog.cloud.domain.response.StatusNotifyResponse;
+import com.blog.cloud.domain.response.*;
+import com.blog.cloud.domain.shared.ChatRoomDescription;
 import com.blog.cloud.domain.shared.Token;
 import com.blog.cloud.enums.LoginCode;
 import com.blog.cloud.enums.StatusNotifyCode;
 import com.blog.cloud.service.LoginService;
+import com.blog.cloud.service.SyncServie;
 import com.blog.cloud.utils.QRCodeUtils;
 import com.blog.cloud.utils.WechatUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +34,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private CacheConfiguration cacheConfiguration;
+
+    @Autowired
+    private SyncServie syncServie;
 
     @Override
     public void login() {
@@ -72,11 +74,15 @@ public class LoginServiceImpl implements LoginService {
                 if (loginResponse.getRedirectUrl() == null) {
                     throw new RuntimeException("redirectUrl can't be found");
                 }
+                /*if ("https://wx2.qq.com".equals(loginResponse.getHostUrl())) {
+                    loginResponse.setHostUrl("https://wx.qq.com");
+                }*/
                 cacheConfiguration.setHostUrl(loginResponse.getHostUrl());
                 if (loginResponse.getHostUrl().equals("https://wechat.com")) {
                     cacheConfiguration.setSyncUrl("https://webpush.web.wechat.com");
                     cacheConfiguration.setFileUrl("https://file.web.wechat.com");
                 } else {
+                    cacheConfiguration.setHostUrl("https://wx.qq.com");
                     cacheConfiguration.setSyncUrl(loginResponse.getHostUrl().replaceFirst("^https://", "https://webpush."));
                     cacheConfiguration.setFileUrl(loginResponse.getHostUrl().replaceFirst("^https://", "https://file."));
                 }
@@ -110,11 +116,12 @@ public class LoginServiceImpl implements LoginService {
         }
         log.info("[5] redirect login completed");
         log.info("[5] redirect login completed" + token);
+        cacheConfiguration.setToken(token);
 
         internal.redirect(cacheConfiguration.getHostUrl());
         log.info("[6] redirect completed");
 
-        InitResponse initResponse = internal.init(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest(), cacheConfiguration.getPassTicket());
+        InitResponse initResponse = internal.init(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest(), token);
         WechatUtils.checkBaseResponse(initResponse);
         cacheConfiguration.setSyncKey(initResponse.getSyncKey());
         cacheConfiguration.setOwner(initResponse.getUser());
@@ -138,7 +145,31 @@ public class LoginServiceImpl implements LoginService {
         cacheConfiguration.getMediaPlatforms().addAll(contact.getMemberList().stream().filter(WechatUtils::isMediaPlatform).collect(Collectors.toSet()));
         log.info("[9] get contact completed");
 
+        ChatRoomDescription[] chatRoomDescriptions = initResponse.getContactList().stream()
+                .filter(x -> x != null && WechatUtils.isChatRoom(x))
+                .map(x -> {
+                    ChatRoomDescription description = new ChatRoomDescription();
+                    description.setUserName(x.getUserName());
+                    return description;
+                })
+                .toArray(ChatRoomDescription[]::new);
+        if (chatRoomDescriptions.length > 0) {
+            BatchGetContactResponse batchGetContactResponse = internal.batchGetContact(
+                    cacheConfiguration.getHostUrl(),
+                    cacheConfiguration.getBaseRequest(),
+                    chatRoomDescriptions, token);
+            WechatUtils.checkBaseResponse(batchGetContactResponse);
+            log.info("[*] batchGetContactResponse count = " + batchGetContactResponse.getCount());
+            cacheConfiguration.getChatRooms().addAll(batchGetContactResponse.getContactList());
+        }
 
+        log.info("[10] batch get contact completed");
+        cacheConfiguration.setAlive(true);
+        log.info("[*] login process completed");
+        log.info("[*] start listening");
+        while (true) {
+            syncServie.listen();
+        }
     }
 
 }

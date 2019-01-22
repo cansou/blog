@@ -1,10 +1,7 @@
 package com.blog.cloud.config;
 
 import com.blog.cloud.domain.request.BaseRequest;
-import com.blog.cloud.domain.shared.Contact;
-import com.blog.cloud.domain.shared.Owner;
-import com.blog.cloud.domain.shared.SyncCheckKey;
-import com.blog.cloud.domain.shared.SyncKey;
+import com.blog.cloud.domain.shared.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +63,9 @@ public class CacheConfiguration {
 
     @ApiModelProperty(name = "contactNamesWithUnreadMessage", value = "contactNamesWithUnreadMessage")
     private Set<String> contactNamesWithUnreadMessage;
+
+    @ApiModelProperty(name = "token", value = "token")
+    private Token token;
 
 
     public CacheConfiguration() {

@@ -1,14 +1,11 @@
 package com.blog.cloud.config;
 
-import com.blog.cloud.domain.request.BaseRequest;
-import com.blog.cloud.domain.request.InitRequest;
-import com.blog.cloud.domain.request.StatReportRequest;
-import com.blog.cloud.domain.request.StatusNotifyRequest;
-import com.blog.cloud.domain.response.GetContactResponse;
-import com.blog.cloud.domain.response.InitResponse;
-import com.blog.cloud.domain.response.LoginResponse;
-import com.blog.cloud.domain.response.StatusNotifyResponse;
+import com.blog.cloud.domain.request.*;
+import com.blog.cloud.domain.response.*;
+import com.blog.cloud.domain.shared.ChatRoomDescription;
+import com.blog.cloud.domain.shared.SyncKey;
 import com.blog.cloud.domain.shared.Token;
+import com.blog.cloud.utils.DeviceIdGenerator;
 import com.blog.cloud.utils.HeaderUtils;
 import com.blog.cloud.utils.HttpUtils;
 import com.blog.cloud.utils.WechatUtils;
@@ -17,7 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,6 +27,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -214,10 +216,30 @@ public class WechatApiServiceInternal {
         customHeader.set(HttpHeaders.ACCEPT_LANGUAGE, "zh-CN,zh;q=0.9");
         redirectUrl = redirectUrl + "&fun=new&version=v2";
         Map<String, String> headers = customHeader.toSingleValueMap();
-        String xmlString = HttpUtils.httpGet(redirectUrl, headers, null);
+
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(redirectUrl, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
+        String xmlString = responseEntity.getBody();
+
+        //String xmlString = HttpUtils.httpGet(redirectUrl, headers, null);
         ObjectMapper xmlMapper = new XmlMapper();
         try {
-            return xmlMapper.readValue(xmlString, Token.class);
+            Token token = xmlMapper.readValue(xmlString, Token.class);
+            Map<String, String> cookies = new HashMap<>();
+            List<String> lists = responseEntity.getHeaders().get("Set-Cookie");
+            //wxuin=2525801323; Domain=wx.qq.com; Path=/; Expires=Wed, 23-Jan-2019 04:52:43 GMT; Secure
+            lists.stream().forEach(cs -> {
+                String split = cs.split(";")[0];
+                int i = split.indexOf("=");
+                String key = split.substring(0, i);
+                String value = split.substring(i + 1, split.length());
+                cookies.put(key, value);
+            });
+            CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
+            Date maxDate = new Date(Long.MAX_VALUE);
+            String domain = properties.getUrl().getEntry().replaceAll("https://", "").replaceAll("/", "");
+            appendAdditionalCookies(store, cookies, domain, "/", maxDate);
+            return token;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -251,10 +273,10 @@ public class WechatApiServiceInternal {
      * @return current user's information and contact information
      * @throws IOException if the http response body can't be convert to {@link InitResponse}
      */
-    public InitResponse init(String hostUrl, BaseRequest baseRequest, String pass_ticket) {
+    public InitResponse init(String hostUrl, BaseRequest baseRequest, Token token) {
         log.info("init params -> " + hostUrl + " -> " + baseRequest);
         long time = System.currentTimeMillis();
-        String url = hostUrl + String.format(properties.getUrl().getInit(), -((int) time + 1), pass_ticket);
+        String url = hostUrl + String.format(properties.getUrl().getInit(), -((int) time + 1), token.getPass_ticket());
 
         CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
         Date maxDate = new Date(Long.MAX_VALUE);
@@ -262,13 +284,21 @@ public class WechatApiServiceInternal {
         Map<String, String> cookies = new HashMap<>(3);
         cookies.put("MM_WX_NOTIFY_STATE", "1");
         cookies.put("MM_WX_SOUND_STATE", "1");
+        //cookies.put("wxsid", token.getWxsid());
+        //cookies.put("wxuin", token.getWxuin());
         appendAdditionalCookies(store, cookies, domain, "/", maxDate);
         InitRequest request = new InitRequest();
         request.setBaseRequest(baseRequest);
+
+        //将Cookie 放入 restTemplate 中，带Cookie 去访问下面所有的请求
+        ((StatefullRestTemplate) restTemplate).getHttpContext().setAttribute(ClientContext.COOKIE_STORE, store);
+
         HttpHeaders customHeader = new HttpHeaders();
+        //customHeader.put(HttpHeaders.COOKIE, cookieList);
         customHeader.set("Host", domain);
         customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
         customHeader.setOrigin(hostUrl);
+
         HeaderUtils.assign(customHeader, postHeader);
         ResponseEntity<String> responseEntity
                 = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
@@ -339,6 +369,66 @@ public class WechatApiServiceInternal {
         return null;
     }
 
+    public BatchGetContactResponse batchGetContact(String hostUrl, BaseRequest baseRequest, ChatRoomDescription[] list, Token token) {
+        long rnd = System.currentTimeMillis();
+
+        String url = hostUrl + String.format(properties.getUrl().getBatchGetContact(), rnd, token.getPass_ticket());
+        BatchGetContactRequest request = new BatchGetContactRequest();
+        request.setBaseRequest(baseRequest);
+        request.setCount(list.length);
+        request.setList(list);
+        HttpHeaders customHeader = createPostCustomHeader();
+        HeaderUtils.assign(customHeader, postHeader);
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), BatchGetContactResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public SyncCheckResponse syncCheck(String hostUrl, Token token, SyncKey syncKey) {
+        try {
+            final Pattern pattern = Pattern.compile("window.synccheck=\\{retcode:\"(\\d+)\",selector:\"(\\d+)\"\\}");
+
+            final String path = hostUrl + String.format(properties.getUrl().getSyncCheck(), hostUrl);
+            URIBuilder builder = new URIBuilder(path);
+            builder.addParameter("uin", token.getWxuin());
+            builder.addParameter("sid", token.getWxsid());
+            builder.addParameter("skey", token.getSkey());
+            builder.addParameter("deviceid", DeviceIdGenerator.generate());
+            builder.addParameter("synckey", syncKey.toString());
+            builder.addParameter("r", String.valueOf(System.currentTimeMillis()));
+            builder.addParameter("_", String.valueOf(System.currentTimeMillis()));
+
+            CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
+            String s = store.getCookies().toString();
+            //System.out.println(s);
+            final URI uri = builder.build().toURL().toURI();
+            HttpHeaders customHeader = new HttpHeaders();
+            customHeader.setAccept(Arrays.asList(MediaType.ALL));
+            customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
+            HeaderUtils.assign(customHeader, getHeader);
+            ResponseEntity<String> responseEntity
+                    = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
+            String body = responseEntity.getBody();
+            Matcher matcher = pattern.matcher(body);
+            if (!matcher.find()) {
+                return null;
+            } else {
+                SyncCheckResponse result = new SyncCheckResponse();
+                result.setRetcode(Integer.valueOf(matcher.group(1)));
+                result.setSelector(Integer.valueOf(matcher.group(2)));
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private void appendAdditionalCookies(CookieStore store, Map<String, String> cookies, String domain, String path, Date expiryDate) {
         cookies.forEach((key, value) -> {
             BasicClientCookie cookie = new BasicClientCookie(key, value);
@@ -356,6 +446,13 @@ public class WechatApiServiceInternal {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private HttpHeaders createPostCustomHeader() {
+        HttpHeaders customHeader = new HttpHeaders();
+        customHeader.setOrigin(this.originValue);
+        customHeader.set(HttpHeaders.REFERER, this.refererValue);
+        return customHeader;
     }
 
 }

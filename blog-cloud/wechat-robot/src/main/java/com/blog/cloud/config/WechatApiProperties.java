@@ -49,8 +49,8 @@ public class WechatApiProperties {
         @ApiModelProperty(name = "statusNotify", value = "statusNotify")
         private String statusNotify;
 
-        @ApiModelProperty(name = "syncHeck", value = "syncHeck")
-        private String syncHeck;
+        @ApiModelProperty(name = "syncCheck", value = "syncCheck")
+        private String syncCheck;
 
         @ApiModelProperty(name = "sync", value = "sync")
         private String sync;
