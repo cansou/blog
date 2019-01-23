@@ -14,6 +14,7 @@ import com.blog.cloud.utils.QRCodeUtils;
 import com.blog.cloud.utils.WechatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -34,9 +35,6 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private CacheConfiguration cacheConfiguration;
-
-    @Autowired
-    private SyncServie syncServie;
 
     @Override
     public void login() {
@@ -167,9 +165,6 @@ public class LoginServiceImpl implements LoginService {
         cacheConfiguration.setAlive(true);
         log.info("[*] login process completed");
         log.info("[*] start listening");
-        while (true) {
-            syncServie.listen();
-        }
     }
 
 }

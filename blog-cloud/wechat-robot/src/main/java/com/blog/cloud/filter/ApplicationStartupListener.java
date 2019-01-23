@@ -1,20 +1,17 @@
 package com.blog.cloud.filter;
 
-import com.blog.cloud.config.WechatApiServiceInternal;
+import com.blog.cloud.event.WechatRobotApplicationEvent;
 import com.blog.cloud.service.LoginService;
-import com.blog.cloud.utils.QRCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * 在容器启动完成后 执行
@@ -30,7 +27,8 @@ public class ApplicationStartupListener implements BeanFactoryAware, Application
 
     @Autowired
     private LoginService loginService;
-
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
 
     @Override
@@ -42,5 +40,7 @@ public class ApplicationStartupListener implements BeanFactoryAware, Application
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         //启动微信机器人
         loginService.login();
+        //启动机器人的事件监听
+        publisher.publishEvent(new WechatRobotApplicationEvent(new Object()));
     }
 }
