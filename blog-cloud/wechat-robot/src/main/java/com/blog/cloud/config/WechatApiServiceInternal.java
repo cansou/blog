@@ -402,6 +402,17 @@ public class WechatApiServiceInternal {
             customHeader.setAccept(Arrays.asList(MediaType.ALL));
             customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
             HeaderUtils.assign(customHeader, getHeader);
+
+            //将微信
+            CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
+            StringBuffer buffer = new StringBuffer();
+            List<Cookie> cookies = store.getCookies();
+            cookies.stream().forEach(cs -> {
+                String s = cs.getName() + "=" + cs.getValue() + ";";
+                buffer.append(s);
+            });
+            customHeader.set("Cookie", buffer.toString());
+
             ResponseEntity<String> responseEntity
                     = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
             String body = responseEntity.getBody();
