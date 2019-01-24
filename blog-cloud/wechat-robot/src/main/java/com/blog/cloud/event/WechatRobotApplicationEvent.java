@@ -1,7 +1,7 @@
 package com.blog.cloud.event;
 
-import com.blog.cloud.config.WechatApiProperties;
 import com.blog.cloud.service.SyncServie;
+import com.blog.cloud.tasks.WechatSyncServiceTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEvent;
 
@@ -12,8 +12,9 @@ public class WechatRobotApplicationEvent extends ApplicationEvent {
         super(source);
     }
 
-    public void invokeEvent(SyncServie syncServie) {
-        log.info("接收到事件：" + syncServie.getClass());
+    public void invokeEvent(WechatSyncServiceTask syncServiceTask) {
         //执行异步监听操作
+        syncServiceTask.setFlag(true);
+        syncServiceTask.invokeSyncServie();
     }
 }

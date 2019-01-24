@@ -17,6 +17,7 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -228,17 +229,24 @@ public class WechatApiServiceInternal {
             Map<String, String> cookies = new HashMap<>();
             List<String> lists = responseEntity.getHeaders().get("Set-Cookie");
             //wxuin=2525801323; Domain=wx.qq.com; Path=/; Expires=Wed, 23-Jan-2019 04:52:43 GMT; Secure
-            lists.stream().forEach(cs -> {
-                String split = cs.split(";")[0];
-                int i = split.indexOf("=");
-                String key = split.substring(0, i);
-                String value = split.substring(i + 1, split.length());
-                cookies.put(key, value);
-            });
             CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
             Date maxDate = new Date(Long.MAX_VALUE);
-            String domain = properties.getUrl().getEntry().replaceAll("https://", "").replaceAll("/", "");
-            appendAdditionalCookies(store, cookies, domain, "/", maxDate);
+            lists.stream().forEach(cs -> {
+                String[] split = cs.split(";");
+                List<String> val = new ArrayList<>();
+                for (int i = 0; i < 3; i++) {
+                    String key = split[i].substring(0, split[i].indexOf("="));
+                    String value = split[i].substring(split[i].indexOf("=") + 1, split[i].length());
+                    val.add(key);
+                    val.add(value);
+                }
+
+                BasicClientCookie cookie = new BasicClientCookie(val.get(0), val.get(1));
+                cookie.setDomain(val.get(3));
+                cookie.setPath(val.get(5));
+                cookie.setExpiryDate(maxDate);
+                store.addCookie(cookie);
+            });
             return token;
         } catch (IOException e) {
             e.printStackTrace();
@@ -277,24 +285,10 @@ public class WechatApiServiceInternal {
         log.info("init params -> " + hostUrl + " -> " + baseRequest);
         long time = System.currentTimeMillis();
         String url = hostUrl + String.format(properties.getUrl().getInit(), -((int) time + 1), token.getPass_ticket());
-
-        CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
-        Date maxDate = new Date(Long.MAX_VALUE);
         String domain = hostUrl.replaceAll("https://", "").replaceAll("/", "");
-        Map<String, String> cookies = new HashMap<>(3);
-        cookies.put("MM_WX_NOTIFY_STATE", "1");
-        cookies.put("MM_WX_SOUND_STATE", "1");
-        //cookies.put("wxsid", token.getWxsid());
-        //cookies.put("wxuin", token.getWxuin());
-        appendAdditionalCookies(store, cookies, domain, "/", maxDate);
         InitRequest request = new InitRequest();
         request.setBaseRequest(baseRequest);
-
-        //将Cookie 放入 restTemplate 中，带Cookie 去访问下面所有的请求
-        ((StatefullRestTemplate) restTemplate).getHttpContext().setAttribute(ClientContext.COOKIE_STORE, store);
-
         HttpHeaders customHeader = new HttpHeaders();
-        //customHeader.put(HttpHeaders.COOKIE, cookieList);
         customHeader.set("Host", domain);
         customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
         customHeader.setOrigin(hostUrl);
@@ -403,9 +397,6 @@ public class WechatApiServiceInternal {
             builder.addParameter("r", String.valueOf(System.currentTimeMillis()));
             builder.addParameter("_", String.valueOf(System.currentTimeMillis()));
 
-            CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
-            String s = store.getCookies().toString();
-            //System.out.println(s);
             final URI uri = builder.build().toURL().toURI();
             HttpHeaders customHeader = new HttpHeaders();
             customHeader.setAccept(Arrays.asList(MediaType.ALL));

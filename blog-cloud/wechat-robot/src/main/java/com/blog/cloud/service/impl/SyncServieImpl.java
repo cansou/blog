@@ -33,21 +33,9 @@ public class SyncServieImpl implements SyncServie {
             Integer retCode = syncCheckResponse.getRetcode();
             Integer selector = syncCheckResponse.getSelector();
 
-            //log.info(String.format("[SYNCCHECK] retcode = %s, selector = %s", retCode, selector));
+            log.info(String.format("[SYNCCHECK] retcode = %s, selector = %s", retCode, selector));
 
             if (retCode == RetCode.NORMAL.getCode()) {
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
-                log.info("你有一条新的消息");
                 log.info("你有一条新的消息");
 
                 if (selector == Selector.NEW_MESSAGE.getCode()) {
