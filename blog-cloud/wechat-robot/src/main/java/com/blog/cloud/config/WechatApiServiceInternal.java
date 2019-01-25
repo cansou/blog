@@ -2,11 +2,9 @@ package com.blog.cloud.config;
 
 import com.blog.cloud.domain.request.*;
 import com.blog.cloud.domain.response.*;
-import com.blog.cloud.domain.shared.ChatRoomDescription;
-import com.blog.cloud.domain.shared.SyncKey;
-import com.blog.cloud.domain.shared.Token;
-import com.blog.cloud.domain.shared.VerifyUser;
+import com.blog.cloud.domain.shared.*;
 import com.blog.cloud.enums.AddScene;
+import com.blog.cloud.enums.MessageType;
 import com.blog.cloud.enums.VerifyUserOPCode;
 import com.blog.cloud.utils.DeviceIdGenerator;
 import com.blog.cloud.utils.HeaderUtils;
@@ -485,6 +483,34 @@ public class WechatApiServiceInternal {
 
     public void logout(String sad, String ds) {
 
+    }
+
+    public SendMsgResponse sendText(String hostUrl, BaseRequest baseRequest, String content, String fromUserName, String toUserName) {
+        final int scene = 0;
+        final String rnd = String.valueOf(System.currentTimeMillis() * 10);
+        final String url = hostUrl + String.format(properties.getUrl().getSendMsg(), cacheConfiguration.getPassTicket());
+
+        SendMsgRequest request = new SendMsgRequest();
+        request.setBaseRequest(baseRequest);
+        request.setScene(scene);
+        BaseMsg msg = new BaseMsg();
+        msg.setType(MessageType.TEXT.getCode());
+        msg.setClientMsgId(rnd);
+        msg.setContent(content);
+        msg.setFromUserName(fromUserName);
+        msg.setToUserName(toUserName);
+        msg.setLocalID(rnd);
+        request.setMsg(msg);
+        HttpHeaders customHeader = createPostCustomHeader();
+        HeaderUtils.assign(customHeader, postHeader);
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), SendMsgResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void appendAdditionalCookies(CookieStore store, Map<String, String> cookies, String domain, String path, Date expiryDate) {

@@ -2,8 +2,10 @@ package com.blog.cloud.service.impl;
 
 import com.blog.cloud.config.CacheConfiguration;
 import com.blog.cloud.config.WechatApiServiceInternal;
+import com.blog.cloud.domain.response.SendMsgResponse;
 import com.blog.cloud.domain.shared.Contact;
 import com.blog.cloud.service.WechatHttpService;
+import com.blog.cloud.utils.WechatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,9 @@ public class WechatHttpServiceImpl implements WechatHttpService {
 
     @Override
     public void sendText(String userName, String content) {
-
+        notifyNecessary(userName);
+        SendMsgResponse response = internal.sendText(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest(), content, cacheConfiguration.getOwner().getUserName(), userName);
+        WechatUtils.checkBaseResponse(response);
     }
 
     @Override

@@ -59,7 +59,7 @@ wechat:
     sync-check: ${wechat.url.path-base}/synccheck
     sync: ${wechat.url.path-base}/webwxsync?sid=%s&skey=%s&pass_ticket=%s
     get-contact: ${wechat.url.path-base}/webwxgetcontact?r=%s&seq=%s&skey=%s&pass_ticket=%s&lang=zh_CN
-    send-msg: ${wechat.url.path-base}/webwxsendmsg
+    send-msg: ${wechat.url.path-base}/webwxsendmsg?pass_ticket=%s
     upload-media: ${wechat.url.path-base}/webwxuploadmedia?f=json
     get-msg-img: ${wechat.url.path-base}/webwxgetmsgimg?&MsgID=%s&skey=%s&pass_ticket=%s
     get-voice: ${wechat.url.path-base}/webwxgetvoice
