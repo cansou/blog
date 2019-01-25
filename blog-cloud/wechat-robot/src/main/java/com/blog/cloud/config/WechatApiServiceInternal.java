@@ -5,16 +5,17 @@ import com.blog.cloud.domain.response.*;
 import com.blog.cloud.domain.shared.ChatRoomDescription;
 import com.blog.cloud.domain.shared.SyncKey;
 import com.blog.cloud.domain.shared.Token;
+import com.blog.cloud.domain.shared.VerifyUser;
+import com.blog.cloud.enums.AddScene;
+import com.blog.cloud.enums.VerifyUserOPCode;
 import com.blog.cloud.utils.DeviceIdGenerator;
 import com.blog.cloud.utils.HeaderUtils;
-import com.blog.cloud.utils.HttpUtils;
 import com.blog.cloud.utils.WechatUtils;
 import com.blog.cloud.utils.rest.StatefullRestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.cookie.Cookie;
@@ -28,7 +29,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -51,6 +51,9 @@ public class WechatApiServiceInternal {
 
     @Autowired
     private WechatApiProperties properties;
+
+    @Autowired
+    private CacheConfiguration cacheConfiguration;
 
     private RestTemplate restTemplate;
     private HttpHeaders postHeader;
@@ -403,7 +406,7 @@ public class WechatApiServiceInternal {
             customHeader.set(HttpHeaders.REFERER, hostUrl + "/");
             HeaderUtils.assign(customHeader, getHeader);
 
-            //将微信
+            //将从微信获取到的Cookie 放入到请求头中
             CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
             StringBuffer buffer = new StringBuffer();
             List<Cookie> cookies = store.getCookies();
@@ -429,6 +432,59 @@ public class WechatApiServiceInternal {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public SyncResponse sync(String hostUrl, SyncKey syncKey, BaseRequest baseRequest) {
+        final String url = hostUrl + String.format(properties.getUrl().getSync(), baseRequest.getSid(), escape(baseRequest.getSkey()), cacheConfiguration.getPassTicket());
+        SyncRequest request = new SyncRequest();
+        request.setBaseRequest(baseRequest);
+        request.setRr(System.currentTimeMillis() / 1000);
+        request.setSyncKey(syncKey);
+        HttpHeaders customHeader = createPostCustomHeader();
+        HeaderUtils.assign(customHeader, postHeader);
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), SyncResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public VerifyUserResponse acceptFriend(String hostUrl, BaseRequest baseRequest, String passTicket, List<VerifyUser> verifyUsers) {
+        try {
+            final int opCode = VerifyUserOPCode.VERIFYOK.getCode();
+            final Integer[] sceneList = new Integer[]{AddScene.WEB.getCode()};
+            final String path = hostUrl + String.format(properties.getUrl().getVerifyUser(), cacheConfiguration.getPassTicket());
+
+            VerifyUserRequest request = new VerifyUserRequest();
+            request.setBaseRequest(baseRequest);
+            request.setOpcode(opCode);
+            request.setSceneList(sceneList);
+            request.setSceneListCount(sceneList.length);
+            request.setSkey(baseRequest.getSkey());
+            request.setVerifyContent("");
+            request.setVerifyUserList(verifyUsers);
+            request.setVerifyUserListSize(verifyUsers.size());
+
+            URIBuilder builder = new URIBuilder(path);
+            builder.addParameter("r", String.valueOf(System.currentTimeMillis()));
+            final URI uri = builder.build().toURL().toURI();
+
+            ResponseEntity<String> responseEntity
+                    = restTemplate.exchange(uri, HttpMethod.POST, new HttpEntity<>(request, this.postHeader), String.class);
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), VerifyUserResponse.class);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void logout(String sad, String ds) {
+
     }
 
     private void appendAdditionalCookies(CookieStore store, Map<String, String> cookies, String domain, String path, Date expiryDate) {
