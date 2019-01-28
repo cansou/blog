@@ -76,9 +76,9 @@ public class WechatApiServiceInternal {
     public void open(int retryTimes) {
         final String url = properties.getUrl().getEntry();
         HttpHeaders customHeader = new HttpHeaders();
-        customHeader.setPragma("no-cache");
-        customHeader.setCacheControl("no-cache");
         customHeader.set("Upgrade-Insecure-Requests", "1");
+        customHeader.setCacheControl("max-age=0");
+        customHeader.setConnection("keep-alive");
         customHeader.set(HttpHeaders.ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         HeaderUtils.assign(customHeader, getHeader);
         restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
@@ -107,12 +107,13 @@ public class WechatApiServiceInternal {
         final String regEx = "window.QRLogin.code = (\\d+); window.QRLogin.uuid = \"(\\S+?)\";";
         final String url = String.format(properties.getUrl().getUuid(), System.currentTimeMillis());
         final String successCode = "200";
+
         HttpHeaders customHeader = new HttpHeaders();
-        customHeader.setPragma("no-cache");
-        customHeader.setCacheControl("no-cache");
+        customHeader.setConnection("keep-alive");
         customHeader.setAccept(Arrays.asList(MediaType.ALL));
         customHeader.set(HttpHeaders.REFERER, properties.getUrl().getEntry());
         HeaderUtils.assign(customHeader, getHeader);
+
         ResponseEntity<String> responseEntity
                 = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
         String body = responseEntity.getBody();
@@ -134,10 +135,13 @@ public class WechatApiServiceInternal {
     public byte[] getQR(String uuid) {
         log.info("getQR params -> " + uuid);
         final String url = properties.getUrl().getQrcode() + "/" + uuid;
+
         HttpHeaders customHeader = new HttpHeaders();
         customHeader.set(HttpHeaders.ACCEPT, "image/webp,image/apng,image/*,*/*;q=0.8");
+        customHeader.setConnection("keep-alive");
         customHeader.set(HttpHeaders.REFERER, properties.getUrl().getEntry());
         HeaderUtils.assign(customHeader, getHeader);
+
         ResponseEntity<byte[]> responseEntity
                 = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(customHeader), new ParameterizedTypeReference<byte[]>() {
         });
@@ -149,17 +153,19 @@ public class WechatApiServiceInternal {
      */
     public void statReport() {
         final String url = properties.getUrl().getStatreport();
+
         StatReportRequest request = new StatReportRequest();
         BaseRequest baseRequest = new BaseRequest();
         baseRequest.setUin("");
         baseRequest.setSid("");
         request.setBaseRequest(baseRequest);
-        request.setCount(0);
+        request.setCount(2);
         request.setList(new ArrayList<>());
         HttpHeaders customHeader = new HttpHeaders();
         customHeader.set(HttpHeaders.REFERER, properties.getUrl().getEntry());
         customHeader.setOrigin(properties.getUrl().getEntry().replaceAll("/$", ""));
         HeaderUtils.assign(customHeader, postHeader);
+
         restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
     }
 
@@ -177,10 +183,12 @@ public class WechatApiServiceInternal {
         Pattern redirectUrlPattern = Pattern.compile("window.redirect_uri=\\\"(.*)\\\";");
         long time = System.currentTimeMillis();
         final String url = String.format(properties.getUrl().getLogin(), uuid, -((int) time + 1), time);
+
         HttpHeaders customHeader = new HttpHeaders();
         customHeader.setAccept(Arrays.asList(MediaType.ALL));
         customHeader.set(HttpHeaders.REFERER, properties.getUrl().getEntry());
         HeaderUtils.assign(customHeader, getHeader);
+
         ResponseEntity<String> responseEntity
                 = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
         String body = responseEntity.getBody();
@@ -209,27 +217,29 @@ public class WechatApiServiceInternal {
      * @return
      */
     public Token openNewloginpage(String redirectUrl) {
+
+        redirectUrl = redirectUrl + "&fun=new&version=v2";
         log.info("openNewloginpage params -> " + redirectUrl);
+
         HttpHeaders customHeader = new HttpHeaders();
         customHeader.setAccept(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.ALL));
         customHeader.set(HttpHeaders.REFERER, properties.getUrl().getEntry());
         customHeader.set("Upgrade-Insecure-Requests", "1");
         HeaderUtils.assign(customHeader, getHeader);
         customHeader.set(HttpHeaders.ACCEPT_LANGUAGE, "zh-CN,zh;q=0.9");
-        redirectUrl = redirectUrl + "&fun=new&version=v2";
-        Map<String, String> headers = customHeader.toSingleValueMap();
 
         ResponseEntity<String> responseEntity
                 = restTemplate.exchange(redirectUrl, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
         String xmlString = responseEntity.getBody();
 
-        //String xmlString = HttpUtils.httpGet(redirectUrl, headers, null);
         ObjectMapper xmlMapper = new XmlMapper();
         try {
             Token token = xmlMapper.readValue(xmlString, Token.class);
+
+            //wxuin=2525801323; Domain=wx.qq.com; Path=/; Expires=Wed, 23-Jan-2019 04:52:43 GMT; Secure
+            //获取响应的Cookie, 保存起来
             Map<String, String> cookies = new HashMap<>();
             List<String> lists = responseEntity.getHeaders().get("Set-Cookie");
-            //wxuin=2525801323; Domain=wx.qq.com; Path=/; Expires=Wed, 23-Jan-2019 04:52:43 GMT; Secure
             CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
             Date maxDate = new Date(Long.MAX_VALUE);
             lists.stream().forEach(cs -> {
@@ -241,7 +251,6 @@ public class WechatApiServiceInternal {
                     val.add(key);
                     val.add(value);
                 }
-
                 BasicClientCookie cookie = new BasicClientCookie(val.get(0), val.get(1));
                 cookie.setDomain(val.get(3));
                 cookie.setPath(val.get(5));
@@ -287,6 +296,7 @@ public class WechatApiServiceInternal {
         long time = System.currentTimeMillis();
         String url = hostUrl + String.format(properties.getUrl().getInit(), -((int) time + 1), token.getPass_ticket());
         String domain = hostUrl.replaceAll("https://", "").replaceAll("/", "");
+
         InitRequest request = new InitRequest();
         request.setBaseRequest(baseRequest);
         HttpHeaders customHeader = new HttpHeaders();

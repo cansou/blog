@@ -43,6 +43,9 @@ zuul:
     api-wechat-server:
       path: /wechat/**
       serviceId: wechat-server
+    api-wechat-robot:
+      path: /robot/**
+      serviceId: wechat-robot
 
 blog-server:
   ribbon:
@@ -53,6 +56,22 @@ blog-server:
     OkToRetryOnAllOperations: true
 
 user-server:
+  ribbon:
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
+
+wechat-server:
+  ribbon:
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
+
+wechat-robot:
   ribbon:
     ReadTimeout: 30000
     ConnectTimeout: 15000

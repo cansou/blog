@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 @ServletComponentScan
 @EnableHystrix
 @SpringCloudApplication
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class WechatRobotApplication {
 
     public static void main(String[] args) {
