@@ -139,29 +139,29 @@ hystrix:
 wechat:
   ua: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36
   url:
+    add_chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=addmember&pass_ticket=%s
+    batch-get-contact: ${wechat.url.path-base}/webwxbatchgetcontact?type=ex&r=%s&pass_ticket=%s
+    create-chatroom: ${wechat.url.path-base}/webwxcreatechatroom?r=%s&pass_ticket=%s
+    delete-chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=delmember&pass_ticket=%s
     entry: https://wx.qq.com/
-    login-base: https://login.weixin.qq.com
-    path-base: /cgi-bin/mmwebwx-bin
-    uuid: ${wechat.url.login-base}/jslogin?appid=wx782c26e4c19acffb&fun=new&lang=zh_CN&_=%s
-    qrcode: ${wechat.url.login-base}/qrcode
-    login: ${wechat.url.login-base}${wechat.url.path-base}/login?loginicon=true&uuid=%s&tip=0&r=%s&_=%s
-    init: ${wechat.url.path-base}/webwxinit?r=%s&pass_ticket=%s
-    statreport: ${wechat.url.entry}${wechat.url.path-base}/webwxstatreport?fun=new
-    status-notify: ${wechat.url.path-base}/webwxstatusnotify?pass_ticket=%s
-    sync-check: ${wechat.url.path-base}/synccheck&pass_ticket=%s
-    sync: ${wechat.url.path-base}/webwxsync?sid=%s&skey=%s&pass_ticket=%s
-    get-contact: ${wechat.url.path-base}/webwxgetcontact?r=%s&seq=%s&skey=%s&pass_ticket=%s&lang=zh_CN
-    send-msg: ${wechat.url.path-base}/webwxsendmsg?pass_ticket=%s
-    upload-media: ${wechat.url.path-base}/webwxuploadmedia?f=json&pass_ticket=%s
     get-msg-img: ${wechat.url.path-base}/webwxgetmsgimg?&MsgID=%s&skey=%s&pass_ticket=%s
     get-voice: ${wechat.url.path-base}/webwxgetvoice&pass_ticket=%s
     get-video: ${wechat.url.path-base}/webwxgetvideo&pass_ticket=%s
-    push-login: ${wechat.url.path-base}/webwxpushloginurl&pass_ticket=%s
-    logout: ${wechat.url.path-base}/webwxlogout?redirect=1&type=1&skey=%s&pass_ticket=%s
-    batch-get-contact: ${wechat.url.path-base}/webwxbatchgetcontact?type=ex&r=%s&pass_ticket=%s
-    op-log: ${wechat.url.path-base}/webwxoplog&pass_ticket=%s
-    verify-user: ${wechat.url.path-base}/webwxverifyuser?pass_ticket=%s
     get-media: ${wechat.url.path-base}/webwxgetmedia&pass_ticket=%s
-    create-chatroom: ${wechat.url.path-base}/webwxcreatechatroom?r=%s&pass_ticket=%s
-    delete-chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=delmember&pass_ticket=%s
-    add_chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=addmember&pass_ticket=%s
+    get-contact: ${wechat.url.path-base}/webwxgetcontact?r=%s&seq=%s&skey=%s&pass_ticket=%s&lang=zh_CN
+    init: ${wechat.url.path-base}/webwxinit?r=%s&pass_ticket=%s
+    login-base: https://login.weixin.qq.com
+    login: ${wechat.url.login-base}${wechat.url.path-base}/login?loginicon=true&uuid=%s&tip=0&r=%s&_=%s
+    logout: ${wechat.url.path-base}/webwxlogout?redirect=1&type=1&skey=%s&pass_ticket=%s
+    op-log: ${wechat.url.path-base}/webwxoplog&pass_ticket=%s
+    path-base: /cgi-bin/mmwebwx-bin
+    push-login: ${wechat.url.path-base}/webwxpushloginurl&pass_ticket=%s
+    qrcode: ${wechat.url.login-base}/qrcode
+    statreport: ${wechat.url.entry}${wechat.url.path-base}/webwxstatreport?fun=new
+    status-notify: ${wechat.url.path-base}/webwxstatusnotify?pass_ticket=%s
+    sync-check: ${wechat.url.path-base}/synccheck
+    sync: ${wechat.url.path-base}/webwxsync?sid=%s&skey=%s&pass_ticket=%s
+    send-msg: ${wechat.url.path-base}/webwxsendmsg?pass_ticket=%s
+    upload-media: ${wechat.url.path-base}/webwxuploadmedia?f=json&pass_ticket=%s
+    uuid: ${wechat.url.login-base}/jslogin?appid=wx782c26e4c19acffb&fun=new&lang=zh_CN&_=%s
+    verify-user: ${wechat.url.path-base}/webwxverifyuser?pass_ticket=%s

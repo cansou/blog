@@ -39,8 +39,8 @@ public class ApplicationStartupListener implements BeanFactoryAware, Application
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         //启动微信机器人
-//        loginService.login();
+        loginService.login();
         //启动机器人的事件监听
-//        publisher.publishEvent(new WechatRobotApplicationEvent(new Object()));
+        publisher.publishEvent(new WechatRobotApplicationEvent(new Object()));
     }
 }

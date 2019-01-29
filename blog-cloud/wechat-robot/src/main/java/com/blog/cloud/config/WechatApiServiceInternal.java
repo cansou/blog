@@ -5,6 +5,7 @@ import com.blog.cloud.domain.response.*;
 import com.blog.cloud.domain.shared.*;
 import com.blog.cloud.enums.AddScene;
 import com.blog.cloud.enums.MessageType;
+import com.blog.cloud.enums.OpLogCmdId;
 import com.blog.cloud.enums.VerifyUserOPCode;
 import com.blog.cloud.utils.DeviceIdGenerator;
 import com.blog.cloud.utils.HeaderUtils;
@@ -521,6 +522,110 @@ public class WechatApiServiceInternal {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public OpLogResponse setAlias(String hostUrl, BaseRequest baseRequest, String newAlias, String userName, Token token) {
+        final int cmdId = OpLogCmdId.MODREMARKNAME.getCode();
+        String opLog = properties.getUrl().getOpLog();
+        final String url = hostUrl + String.format(opLog, token.getPass_ticket());
+
+        OpLogRequest request = new OpLogRequest();
+        request.setBaseRequest(baseRequest);
+        request.setCmdId(cmdId);
+        request.setRemarkName(newAlias);
+        request.setUserName(userName);
+        HttpHeaders customHeader = createPostCustomHeader();
+        HeaderUtils.assign(customHeader, postHeader);
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), OpLogResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public CreateChatRoomResponse createChatRoom(String hostUrl, BaseRequest baseRequest, List<String> userNames, String topic, Token token) {
+        String rnd = String.valueOf(System.currentTimeMillis());
+        String createChatroom = properties.getUrl().getCreateChatroom();
+        final String url = hostUrl + String.format(createChatroom, rnd, token.getPass_ticket());
+
+        CreateChatRoomRequest request = new CreateChatRoomRequest();
+        request.setBaseRequest(baseRequest);
+        request.setMemberCount(userNames.size());
+        List<ChatRoomMember> members = new ArrayList<>();
+        for (int i = 0; i < userNames.size(); i++) {
+            ChatRoomMember member = new ChatRoomMember();
+            member.setUserName(userNames.get(i));
+            members.add(member);
+        }
+        request.setMemberList(members);
+        request.setTopic(topic);
+        HttpHeaders customHeader = createPostCustomHeader();
+        HeaderUtils.assign(customHeader, postHeader);
+
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), CreateChatRoomResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public DeleteChatRoomMemberResponse deleteChatRoomMember(String hostUrl, BaseRequest baseRequest, String chatRoomUserName, String userName, Token token) {
+        String deleteChatroomMember = properties.getUrl().getDeleteChatroomMember();
+        final String url = hostUrl + String.format(deleteChatroomMember, token.getPass_ticket()) ;
+
+        DeleteChatRoomMemberRequest request = new DeleteChatRoomMemberRequest();
+        request.setBaseRequest(baseRequest);
+        request.setChatRoomName(chatRoomUserName);
+        request.setDelMemberList(userName);
+        HttpHeaders customHeader = createPostCustomHeader();
+        HeaderUtils.assign(customHeader, postHeader);
+
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), DeleteChatRoomMemberResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public AddChatRoomMemberResponse addChatRoomMember(String hostUrl, BaseRequest baseRequest, String chatRoomUserName, String userName, Token token) {
+        String addChatroomMember = properties.getUrl().getAddChatroomMember();
+        final String url = hostUrl + String.format(addChatroomMember, token.getPass_ticket());
+
+        AddChatRoomMemberRequest request = new AddChatRoomMemberRequest();
+        request.setBaseRequest(baseRequest);
+        request.setChatRoomName(chatRoomUserName);
+        request.setAddMemberList(userName);
+        HttpHeaders customHeader = createPostCustomHeader();
+        HeaderUtils.assign(customHeader, postHeader);
+
+        ResponseEntity<String> responseEntity
+                = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(request, customHeader), String.class);
+        try {
+            return jsonMapper.readValue(WechatUtils.textDecode(responseEntity.getBody()), AddChatRoomMemberResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public byte[] downloadImage(String url) {
+        HttpHeaders customHeader = new HttpHeaders();
+        customHeader.set("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
+        customHeader.set("Referer", this.refererValue);
+        HeaderUtils.assign(customHeader, getHeader);
+        ResponseEntity<byte[]> responseEntity
+                = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(customHeader), new ParameterizedTypeReference<byte[]>() {
+        });
+        return responseEntity.getBody();
     }
 
     private void appendAdditionalCookies(CookieStore store, Map<String, String> cookies, String domain, String path, Date expiryDate) {
