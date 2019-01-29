@@ -107,6 +107,11 @@ public class LoginServiceImpl implements LoginService {
         return loginResponse;
     }
 
+    /**
+     * 微信机器人登陆
+     * @param loginResponse
+     * @param uuid
+     */
     @Override
     public void wechatRobotLogin(LoginResponse loginResponse, String uuid) {
         WechatRobotCache cache = redisUtil.get(uuid, WechatRobotCache.class);

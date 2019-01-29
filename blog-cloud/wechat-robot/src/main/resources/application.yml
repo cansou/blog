@@ -148,20 +148,20 @@ wechat:
     init: ${wechat.url.path-base}/webwxinit?r=%s&pass_ticket=%s
     statreport: ${wechat.url.entry}${wechat.url.path-base}/webwxstatreport?fun=new
     status-notify: ${wechat.url.path-base}/webwxstatusnotify?pass_ticket=%s
-    sync-check: ${wechat.url.path-base}/synccheck
+    sync-check: ${wechat.url.path-base}/synccheck&pass_ticket=%s
     sync: ${wechat.url.path-base}/webwxsync?sid=%s&skey=%s&pass_ticket=%s
     get-contact: ${wechat.url.path-base}/webwxgetcontact?r=%s&seq=%s&skey=%s&pass_ticket=%s&lang=zh_CN
     send-msg: ${wechat.url.path-base}/webwxsendmsg?pass_ticket=%s
-    upload-media: ${wechat.url.path-base}/webwxuploadmedia?f=json
+    upload-media: ${wechat.url.path-base}/webwxuploadmedia?f=json&pass_ticket=%s
     get-msg-img: ${wechat.url.path-base}/webwxgetmsgimg?&MsgID=%s&skey=%s&pass_ticket=%s
-    get-voice: ${wechat.url.path-base}/webwxgetvoice
-    get-video: ${wechat.url.path-base}/webwxgetvideo
-    push-login: ${wechat.url.path-base}/webwxpushloginurl
-    logout: ${wechat.url.path-base}/webwxlogout?redirect=1&type=1&skey=%s
+    get-voice: ${wechat.url.path-base}/webwxgetvoice&pass_ticket=%s
+    get-video: ${wechat.url.path-base}/webwxgetvideo&pass_ticket=%s
+    push-login: ${wechat.url.path-base}/webwxpushloginurl&pass_ticket=%s
+    logout: ${wechat.url.path-base}/webwxlogout?redirect=1&type=1&skey=%s&pass_ticket=%s
     batch-get-contact: ${wechat.url.path-base}/webwxbatchgetcontact?type=ex&r=%s&pass_ticket=%s
-    op-log: ${wechat.url.path-base}/webwxoplog
+    op-log: ${wechat.url.path-base}/webwxoplog&pass_ticket=%s
     verify-user: ${wechat.url.path-base}/webwxverifyuser?pass_ticket=%s
-    get-media: ${wechat.url.path-base}/webwxgetmedia
-    create-chatroom: ${wechat.url.path-base}/webwxcreatechatroom?r=%s
-    delete-chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=delmember
-    add_chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=addmember
+    get-media: ${wechat.url.path-base}/webwxgetmedia&pass_ticket=%s
+    create-chatroom: ${wechat.url.path-base}/webwxcreatechatroom?r=%s&pass_ticket=%s
+    delete-chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=delmember&pass_ticket=%s
+    add_chatroom-member: ${wechat.url.path-base}/webwxupdatechatroom?fun=addmember&pass_ticket=%s

@@ -20,6 +20,11 @@ public interface LoginService {
      */
     LoginResponse checkScanQRCodeLogin(String uuid);
 
+    /**
+     * 微信机器人登陆
+     * @param loginResponse
+     * @param uuid
+     */
     void wechatRobotLogin(LoginResponse loginResponse, String uuid);
 
     void login();
