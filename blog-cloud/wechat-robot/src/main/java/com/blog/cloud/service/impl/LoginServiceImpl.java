@@ -180,6 +180,7 @@ public class LoginServiceImpl implements LoginService {
         cache.setAlive(true);
         log.info("[*] login process completed");
         log.info("[*] start listening");
+        redisUtil.set(uuid, cache);
     }
 
     @Override
