@@ -2,6 +2,7 @@ package com.blog.cloud.controller;
 
 import com.blog.cloud.domain.response.LoginResponse;
 import com.blog.cloud.enums.LoginCode;
+import com.blog.cloud.event.WechatRobotApplicationEvent;
 import com.blog.cloud.http.RestResultBuilder;
 import com.blog.cloud.service.LoginService;
 import com.google.zxing.BarcodeFormat;
@@ -14,6 +15,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
@@ -27,6 +29,9 @@ public class WeChatLoginController extends WeChatBaseController {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @GetMapping(value = "/createLoginQRCode")
     @ApiOperation(value = "创建微信机器人登陆二维码", notes = "创建微信机器人登陆二维码")
@@ -77,7 +82,13 @@ public class WeChatLoginController extends WeChatBaseController {
     public RestResultBuilder<String> wechatRobotLogin(@RequestBody LoginResponse loginResponse) {
         String uuid = request.getHeader("uuid");
         if (LoginCode.SUCCESS.getCode().equals(loginResponse.getCode())) {
-            loginService.wechatRobotLogin(loginResponse, uuid);
+            try {
+                loginService.wechatRobotLogin(loginResponse, uuid);
+                publisher.publishEvent(new WechatRobotApplicationEvent(new Object()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return failBuild("登陆失败");
+            }
         } else {
             return failBuild("登陆失败");
         }

@@ -140,6 +140,7 @@ public class LoginServiceImpl implements LoginService {
 
         //初始化用户登陆, 返回微信生成的用户
         InitResponse initResponse = internal.init(cache.getHostUrl(), cache.getBaseRequest(), token);
+        //TODO  插入用户数据
         WechatUtils.checkBaseResponse(initResponse);
         cache.setSyncKey(initResponse.getSyncKey());
         cache.setOwner(initResponse.getUser());
