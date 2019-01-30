@@ -7,6 +7,6 @@ package com.blog.cloud.service;
  */
 public interface SyncServie {
 
-    void listen();
+    void listen(String uuid);
 
 }

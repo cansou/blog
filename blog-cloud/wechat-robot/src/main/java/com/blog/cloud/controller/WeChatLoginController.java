@@ -84,7 +84,7 @@ public class WeChatLoginController extends WeChatBaseController {
         if (LoginCode.SUCCESS.getCode().equals(loginResponse.getCode())) {
             try {
                 loginService.wechatRobotLogin(loginResponse, uuid);
-                publisher.publishEvent(new WechatRobotApplicationEvent(new Object()));
+                publisher.publishEvent(new WechatRobotApplicationEvent(uuid));
             } catch (Exception e) {
                 e.printStackTrace();
                 return failBuild("登陆失败");

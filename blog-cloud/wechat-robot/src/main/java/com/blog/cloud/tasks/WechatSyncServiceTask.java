@@ -28,10 +28,10 @@ public class WechatSyncServiceTask {
      * 固定时间，从服务启动后每隔3秒执行定时任务
      */
     @Scheduled(fixedRate = 3000)
-    public void invokeSyncServie() {
+    public void invokeSyncServie(String uuid) {
         log.info("定时执行响应任务，每3秒钟请求一次");
         if (flag) {
-            syncServie.listen();
+            syncServie.listen(uuid);
         }
     }
 
