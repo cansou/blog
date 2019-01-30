@@ -1,6 +1,5 @@
 package com.blog.cloud.event;
 
-import com.blog.cloud.tasks.WechatSyncServiceTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEvent;
 
@@ -14,9 +13,8 @@ public class WechatRobotApplicationEvent extends ApplicationEvent {
         this.uuid = uuid;
     }
 
-    public void invokeEvent(WechatSyncServiceTask syncServiceTask) {
+    public void invokeEvent() {
         //执行异步监听操作
-        syncServiceTask.setFlag(true);
-        syncServiceTask.invokeSyncServie(uuid);
+
     }
 }

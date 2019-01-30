@@ -34,9 +34,6 @@ public class LoginServiceImpl implements LoginService {
     private WechatApiServiceInternal internal;
 
     @Autowired
-    private CacheConfiguration cacheConfiguration;
-
-    @Autowired
     private RedisUtil redisUtil;
 
     /**
@@ -83,18 +80,18 @@ public class LoginServiceImpl implements LoginService {
             if (loginResponse.getRedirectUrl() == null) {
                 throw new RuntimeException("redirectUrl can't b found");
             }
-            //WechatRobotCache cache = new WechatRobotCache();
-            cacheConfiguration.setUuid(uuid);
-            cacheConfiguration.setHostUrl(loginResponse.getHostUrl());
+            WechatRobotCache cache = new WechatRobotCache();
+            cache.setUuid(uuid);
+            cache.setHostUrl(loginResponse.getHostUrl());
             if (loginResponse.getHostUrl().equals("https://wechat.com")) {
-                cacheConfiguration.setSyncUrl("https://webpush.web.wechat.com");
-                cacheConfiguration.setFileUrl("https://file.web.wechat.com");
+                cache.setSyncUrl("https://webpush.web.wechat.com");
+                cache.setFileUrl("https://file.web.wechat.com");
             } else {
 //                cache.setHostUrl("https://wx.qq.com");
-                cacheConfiguration.setSyncUrl(loginResponse.getHostUrl().replaceFirst("^https://", "https://webpush."));
-                cacheConfiguration.setFileUrl(loginResponse.getHostUrl().replaceFirst("^https://", "https://file."));
+                cache.setSyncUrl(loginResponse.getHostUrl().replaceFirst("^https://", "https://webpush."));
+                cache.setFileUrl(loginResponse.getHostUrl().replaceFirst("^https://", "https://file."));
             }
-            //redisUtil.set(uuid, cache);
+            redisUtil.set(uuid, cache);
         } else if (LoginCode.AWAIT_CONFIRMATION.getCode().equals(loginResponse.getCode())) {
             log.info("[*] login status = AWAIT_CONFIRMATION");
         } else if (LoginCode.AWAIT_SCANNING.getCode().equals(loginResponse.getCode())) {
@@ -114,54 +111,54 @@ public class LoginServiceImpl implements LoginService {
      */
     @Override
     public void wechatRobotLogin(LoginResponse loginResponse, String uuid) {
-        //WechatRobotCache cache = redisUtil.get(uuid, WechatRobotCache.class);
+        WechatRobotCache cache = redisUtil.get(uuid, WechatRobotCache.class);
 
         Token token = internal.openNewloginpage(loginResponse.getRedirectUrl());
 
         if (token.getRet() == 0) {
-            cacheConfiguration.setPassTicket(token.getPass_ticket());
-            cacheConfiguration.setSKey(token.getSkey());
-            cacheConfiguration.setSid(token.getWxsid());
-            cacheConfiguration.setUin(token.getWxuin());
+            cache.setPassTicket(token.getPass_ticket());
+            cache.setSKey(token.getSkey());
+            cache.setSid(token.getWxsid());
+            cache.setUin(token.getWxuin());
             BaseRequest baseRequest = new BaseRequest();
-            baseRequest.setUin(cacheConfiguration.getUin());
-            baseRequest.setSid(cacheConfiguration.getSid());
-            baseRequest.setSkey(cacheConfiguration.getSKey());
-            cacheConfiguration.setBaseRequest(baseRequest);
+            baseRequest.setUin(cache.getUin());
+            baseRequest.setSid(cache.getSid());
+            baseRequest.setSkey(cache.getSKey());
+            cache.setBaseRequest(baseRequest);
         } else {
             throw new RuntimeException("token ret = " + token.getRet());
         }
         log.info("[5] redirect login completed");
         log.info("[5] redirect login completed" + token);
-        cacheConfiguration.setToken(token);
+        cache.setToken(token);
 
-        internal.redirect(cacheConfiguration.getHostUrl());
+        internal.redirect(cache.getHostUrl());
         log.info("[6] redirect completed");
 
         //初始化用户登陆, 返回微信生成的用户
-        InitResponse initResponse = internal.init(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest(), token);
+        InitResponse initResponse = internal.init(cache.getHostUrl(), cache.getBaseRequest(), token);
         //TODO  插入用户数据
         WechatUtils.checkBaseResponse(initResponse);
-        cacheConfiguration.setSyncKey(initResponse.getSyncKey());
-        cacheConfiguration.setOwner(initResponse.getUser());
+        cache.setSyncKey(initResponse.getSyncKey());
+        cache.setOwner(initResponse.getUser());
         log.info("[7] init completed");
         log.info("[7] init initResponse" + initResponse);
         //插入数据库
 
-        StatusNotifyResponse statusNotifyResponse = internal.statusNotify(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest(),
-                cacheConfiguration.getOwner().getUserName(), StatusNotifyCode.INITED.getCode(), cacheConfiguration.getPassTicket());
+        StatusNotifyResponse statusNotifyResponse = internal.statusNotify(cache.getHostUrl(), cache.getBaseRequest(),
+                cache.getOwner().getUserName(), StatusNotifyCode.INITED.getCode(), cache.getPassTicket());
         WechatUtils.checkBaseResponse(statusNotifyResponse);
         log.info("[8] status notify completed");
         log.info("[8] status notify completed " + statusNotifyResponse);
 
         long seq = 0;
-        GetContactResponse contact = internal.getContact(cacheConfiguration.getHostUrl(), cacheConfiguration.getBaseRequest().getSkey(), seq, cacheConfiguration.getPassTicket());
+        GetContactResponse contact = internal.getContact(cache.getHostUrl(), cache.getBaseRequest().getSkey(), seq, cache.getPassTicket());
         WechatUtils.checkBaseResponse(contact);
         log.info("[*] getContactResponse seq = " + contact.getSeq());
         log.info("[*] getContactResponse memberCount = " + contact.getMemberCount());
         seq = contact.getSeq();
-        cacheConfiguration.getIndividuals().addAll(contact.getMemberList().stream().filter(WechatUtils::isIndividual).collect(Collectors.toSet()));
-        cacheConfiguration.getMediaPlatforms().addAll(contact.getMemberList().stream().filter(WechatUtils::isMediaPlatform).collect(Collectors.toSet()));
+        cache.getIndividuals().addAll(contact.getMemberList().stream().filter(WechatUtils::isIndividual).collect(Collectors.toSet()));
+        cache.getMediaPlatforms().addAll(contact.getMemberList().stream().filter(WechatUtils::isMediaPlatform).collect(Collectors.toSet()));
         log.info("[9] get contact completed");
 
         ChatRoomDescription[] chatRoomDescriptions = initResponse.getContactList().stream()
@@ -174,19 +171,19 @@ public class LoginServiceImpl implements LoginService {
                 .toArray(ChatRoomDescription[]::new);
         if (chatRoomDescriptions.length > 0) {
             BatchGetContactResponse batchGetContactResponse = internal.batchGetContact(
-                    cacheConfiguration.getHostUrl(),
-                    cacheConfiguration.getBaseRequest(),
+                    cache.getHostUrl(),
+                    cache.getBaseRequest(),
                     chatRoomDescriptions, token);
             WechatUtils.checkBaseResponse(batchGetContactResponse);
             log.info("[*] batchGetContactResponse count = " + batchGetContactResponse.getCount());
-            cacheConfiguration.getChatRooms().addAll(batchGetContactResponse.getContactList());
+            cache.getChatRooms().addAll(batchGetContactResponse.getContactList());
         }
 
         log.info("[10] batch get contact completed");
-        cacheConfiguration.setAlive(true);
+        cache.setAlive(true);
         log.info("[*] login process completed");
         log.info("[*] start listening");
-        //redisUtil.set(uuid, cache);
+        redisUtil.set(uuid, cache);
     }
 
 }
