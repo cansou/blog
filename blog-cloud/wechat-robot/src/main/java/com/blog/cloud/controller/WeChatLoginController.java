@@ -2,8 +2,8 @@ package com.blog.cloud.controller;
 
 import com.blog.cloud.domain.response.LoginResponse;
 import com.blog.cloud.enums.LoginCode;
-import com.blog.cloud.event.WechatRobotApplicationEvent;
 import com.blog.cloud.http.RestResultBuilder;
+import com.blog.cloud.service.IWechatRobotUserService;
 import com.blog.cloud.service.LoginService;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -29,6 +29,8 @@ public class WeChatLoginController extends WeChatBaseController {
 
     @Autowired
     private LoginService loginService;
+
+
 
     @Autowired
     private ApplicationEventPublisher publisher;

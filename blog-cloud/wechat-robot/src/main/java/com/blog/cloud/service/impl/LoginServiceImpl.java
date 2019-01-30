@@ -1,14 +1,15 @@
 package com.blog.cloud.service.impl;
 
-import com.blog.cloud.config.CacheConfiguration;
 import com.blog.cloud.config.WechatApiServiceInternal;
 import com.blog.cloud.domain.request.BaseRequest;
 import com.blog.cloud.domain.response.*;
 import com.blog.cloud.domain.shared.ChatRoomDescription;
+import com.blog.cloud.domain.shared.Owner;
 import com.blog.cloud.domain.shared.Token;
 import com.blog.cloud.domain.shared.WechatRobotCache;
 import com.blog.cloud.enums.LoginCode;
 import com.blog.cloud.enums.StatusNotifyCode;
+import com.blog.cloud.service.IWechatRobotUserService;
 import com.blog.cloud.service.LoginService;
 import com.blog.cloud.utils.QRCodeUtils;
 import com.blog.cloud.utils.RedisUtil;
@@ -35,6 +36,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private IWechatRobotUserService wechatRobotUserService;
 
     /**
      * 创建二维码
@@ -138,6 +142,11 @@ public class LoginServiceImpl implements LoginService {
         //初始化用户登陆, 返回微信生成的用户
         InitResponse initResponse = internal.init(cache.getHostUrl(), cache.getBaseRequest(), token);
         //TODO  插入用户数据
+        Owner user = initResponse.getUser();
+        if (user != null) {
+            wechatRobotUserService.insertWechatRobotUser(user);
+        }
+
         WechatUtils.checkBaseResponse(initResponse);
         cache.setSyncKey(initResponse.getSyncKey());
         cache.setOwner(initResponse.getUser());
