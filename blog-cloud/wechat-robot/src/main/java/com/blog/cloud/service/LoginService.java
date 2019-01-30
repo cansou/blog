@@ -27,6 +27,4 @@ public interface LoginService {
      */
     void wechatRobotLogin(LoginResponse loginResponse, String uuid);
 
-    void login();
-
 }

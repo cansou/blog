@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  * @create 2019/01/19 17:01
  */
 @Slf4j
-@Component
+//@Component
 public class ApplicationStartupListener implements BeanFactoryAware, ApplicationListener<ContextRefreshedEvent> {
 
     private DefaultListableBeanFactory beanFactory;
@@ -39,8 +39,8 @@ public class ApplicationStartupListener implements BeanFactoryAware, Application
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         //启动微信机器人
-        loginService.login();
+//        loginService.login();
         //启动机器人的事件监听
-        publisher.publishEvent(new WechatRobotApplicationEvent(""));
+//        publisher.publishEvent(new WechatRobotApplicationEvent(""));
     }
 }
