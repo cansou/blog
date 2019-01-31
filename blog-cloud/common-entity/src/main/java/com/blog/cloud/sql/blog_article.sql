@@ -32,8 +32,8 @@ CREATE TABLE `blog_user`(
 DROP TABLE IF EXISTS `wechat_robot_user`;
 CREATE TABLE `wechat_robot_user`(
   `id` VARCHAR(64) NOT NUll COMMENT '用户ID',
-  `nickname` VARCHAR(64) NOT NULL COMMENT '用户昵称',
-  `username` VARCHAR(64) NOT NULL COMMENT '用户名（电子邮箱）',
+  `nickname` VARCHAR(255) NOT NULL COMMENT '用户昵称',
+  `username` VARCHAR(255) NOT NULL COMMENT '用户名（电子邮箱）',
   `uni` BIGINT NOT NULL DEFAULT 0 COMMENT 'uni',
   `sex` TINYINT COMMENT '性别',
   `create_time` BIGINT NOT NULL COMMENT '创建时间',
