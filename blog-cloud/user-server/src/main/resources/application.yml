@@ -129,7 +129,7 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.blog.cloud.pojo.article
+  type-aliases-package: com.blog.cloud.pojo.user
   global-config:
     id-type: 5
     db-column-underline: true
