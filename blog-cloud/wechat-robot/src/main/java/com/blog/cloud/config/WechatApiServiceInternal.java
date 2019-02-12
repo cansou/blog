@@ -211,6 +211,14 @@ public class WechatApiServiceInternal {
         return response;
     }
 
+    public static void main(String[] args) {
+        long currentTimeMillis = System.currentTimeMillis();
+
+        int i = (int) currentTimeMillis + 1;
+        System.out.println(-i);
+
+    }
+
     /**
      * 生成Token
      *
