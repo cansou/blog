@@ -56,8 +56,7 @@ public class QuartzSchedulerConfig {
             factoryBean.setQuartzProperties(quartzProperties());
             factoryBean.setDataSource(dataSource);
             factoryBean.setJobFactory(jobFactory);
-//            factoryBean.setTriggers(cronTrigger);
-//            factoryBean.setJobDetails(jobDetails);
+            factoryBean.setAutoStartup(true);
             factoryBean.setOverwriteExistingJobs(true);
         } catch (Exception e) {
             log.error("加载 {} 配置文件失败.", QUARTZ_PROPERTIES_NAME, e);
@@ -65,22 +64,6 @@ public class QuartzSchedulerConfig {
         }
 
         return factoryBean;
-    }
-
-    @Bean(name = "job1Trigger")
-    public CronTriggerFactoryBean job1Trigger(@Qualifier("job1Detail") JobDetail jobDetail) {
-        CronTriggerFactoryBean cronTriggerFactoryBean = new CronTriggerFactoryBean();
-        cronTriggerFactoryBean.setJobDetail(jobDetail);
-        cronTriggerFactoryBean.setCronExpression("0/15 * * * * ?");
-        return cronTriggerFactoryBean;
-    }
-
-    @Bean(name = "job1Detail")
-    public JobDetailFactoryBean job1Detail() {
-        JobDetailFactoryBean jobDetailFactoryBean = new JobDetailFactoryBean();
-        jobDetailFactoryBean.setJobClass(WhchatRobotSyncTaskJob.class);
-        jobDetailFactoryBean.setDurability(true);
-        return jobDetailFactoryBean;
     }
 
     /**
