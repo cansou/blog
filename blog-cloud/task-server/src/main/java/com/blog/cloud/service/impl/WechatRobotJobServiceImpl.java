@@ -1,14 +1,19 @@
 package com.blog.cloud.service.impl;
 
-import com.blog.cloud.jobs.CronJob;
-import com.blog.cloud.service.IJobService;
+import com.blog.cloud.jobs.WechatRobotSyncTaskJob;
+import com.blog.cloud.service.IWechatRobotJobService;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
-@Service("jobService")
-public class JobServiceImpl implements IJobService {
+/**
+ * @author lxw
+ * @date 2019/2/13
+ * @description
+ */
+@Service("wechatRobotJobService")
+public class WechatRobotJobServiceImpl implements IWechatRobotJobService {
 
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
@@ -23,7 +28,7 @@ public class JobServiceImpl implements IJobService {
                 System.out.println("job:" + jobName + " 已存在");
             } else {
                 //构建job信息
-                jobDetail = JobBuilder.newJob(CronJob.class).withIdentity(jobName, jobGroup).build();
+                jobDetail = JobBuilder.newJob(WechatRobotSyncTaskJob.class).withIdentity(jobName, jobGroup).build();
                 //用JopDataMap来传递数据
                 jobDetail.getJobDataMap().put("taskData", "hzb-cron-001");
 
@@ -31,7 +36,7 @@ public class JobServiceImpl implements IJobService {
                 CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/5 * * * * ?");
 
                 //按新的cronExpression表达式构建一个新的trigger
-                CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName + "_trigger", jobGroup + "_trigger")
+                CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroup)
                         .withSchedule(scheduleBuilder).build();
                 scheduler.scheduleJob(jobDetail, trigger);
             }

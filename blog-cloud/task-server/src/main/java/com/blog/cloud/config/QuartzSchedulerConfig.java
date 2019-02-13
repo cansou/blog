@@ -1,6 +1,5 @@
 package com.blog.cloud.config;
 
-import com.blog.cloud.jobs.WhchatRobotSyncTaskJob;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDetail;
 import org.quartz.spi.JobFactory;

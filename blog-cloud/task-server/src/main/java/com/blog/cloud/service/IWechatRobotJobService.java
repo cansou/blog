@@ -1,6 +1,11 @@
 package com.blog.cloud.service;
 
-public interface IJobService {
+/**
+ * @author lxw
+ * @date 2019/2/13
+ * @description
+ */
+public interface IWechatRobotJobService {
 
     /**
      * 添加一个定时任务
