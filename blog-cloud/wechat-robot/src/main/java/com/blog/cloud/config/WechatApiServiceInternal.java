@@ -251,21 +251,23 @@ public class WechatApiServiceInternal {
             List<String> lists = responseEntity.getHeaders().get("Set-Cookie");
             CookieStore store = (CookieStore) ((StatefullRestTemplate) restTemplate).getHttpContext().getAttribute(HttpClientContext.COOKIE_STORE);
             Date maxDate = new Date(Long.MAX_VALUE);
-            lists.stream().forEach(cs -> {
-                String[] split = cs.split(";");
-                List<String> val = new ArrayList<>();
-                for (int i = 0; i < 3; i++) {
-                    String key = split[i].substring(0, split[i].indexOf("="));
-                    String value = split[i].substring(split[i].indexOf("=") + 1, split[i].length());
-                    val.add(key);
-                    val.add(value);
-                }
-                BasicClientCookie cookie = new BasicClientCookie(val.get(0), val.get(1));
-                cookie.setDomain(val.get(3));
-                cookie.setPath(val.get(5));
-                cookie.setExpiryDate(maxDate);
-                store.addCookie(cookie);
-            });
+            if (lists != null) {
+                lists.stream().forEach(cs -> {
+                    String[] split = cs.split(";");
+                    List<String> val = new ArrayList<>();
+                    for (int i = 0; i < 3; i++) {
+                        String key = split[i].substring(0, split[i].indexOf("="));
+                        String value = split[i].substring(split[i].indexOf("=") + 1, split[i].length());
+                        val.add(key);
+                        val.add(value);
+                    }
+                    BasicClientCookie cookie = new BasicClientCookie(val.get(0), val.get(1));
+                    cookie.setDomain(val.get(3));
+                    cookie.setPath(val.get(5));
+                    cookie.setExpiryDate(maxDate);
+                    store.addCookie(cookie);
+                });
+            }
             return token;
         } catch (IOException e) {
             e.printStackTrace();

@@ -40,16 +40,29 @@ public class WechatRobotUserServiceImpl extends ServiceImpl<IWechatRobotUserMapp
 
     @Override
     public Integer insertWechatRobotUser(Owner user) {
+        WechatRobotUser userw = new WechatRobotUser();
         long currentTimeMillis = System.currentTimeMillis();
+        userw.setUni(user.getUin());
+        WechatRobotUser wechatRobotUser = baseMapper.selectOne(userw);
         WechatRobotUser entity = new WechatRobotUser();
-        entity.setNickname(user.getNickName());
-        entity.setUsername(user.getUserName());
-        entity.setSex(user.getSex());
-        entity.setUni(user.getUin());
-        entity.setSignature(user.getSignature());
-        entity.setUpdateTime(currentTimeMillis);
-        entity.setCreateTime(currentTimeMillis);
-        entity.setUserStatus(1);
-        return baseMapper.insert(entity);
+        if (wechatRobotUser != null) {
+            entity.setId(wechatRobotUser.getId());
+            entity.setNickname(user.getNickName());
+            entity.setUsername(user.getUserName());
+            entity.setSex(user.getSex());
+            entity.setSignature(user.getSignature());
+            entity.setUpdateTime(currentTimeMillis);
+            return baseMapper.updateById(entity);
+        } else {
+            entity.setNickname(user.getNickName());
+            entity.setUsername(user.getUserName());
+            entity.setSex(user.getSex());
+            entity.setUni(user.getUin());
+            entity.setSignature(user.getSignature());
+            entity.setUpdateTime(currentTimeMillis);
+            entity.setCreateTime(currentTimeMillis);
+            entity.setUserStatus(1);
+            return baseMapper.insert(entity);
+        }
     }
 }
