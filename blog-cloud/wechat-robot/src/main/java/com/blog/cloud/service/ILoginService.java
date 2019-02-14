@@ -7,7 +7,7 @@ import com.blog.cloud.domain.response.LoginResponse;
  * @date 2019/1/19
  * @description
  */
-public interface LoginService {
+public interface ILoginService {
 
     /**
      * 创建二维码
@@ -25,6 +25,6 @@ public interface LoginService {
      * @param loginResponse
      * @param uuid
      */
-    void wechatRobotLogin(LoginResponse loginResponse, String uuid);
+    String wechatRobotLogin(LoginResponse loginResponse, String uuid);
 
 }

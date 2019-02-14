@@ -5,8 +5,8 @@ package com.blog.cloud.service;
  * @date 2019/1/22
  * @description
  */
-public interface SyncServie {
+public interface ISyncServie {
 
-    void listen(String uuid);
+    boolean listen(String uuid);
 
 }

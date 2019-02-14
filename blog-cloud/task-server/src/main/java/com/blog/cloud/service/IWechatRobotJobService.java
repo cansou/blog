@@ -1,5 +1,7 @@
 package com.blog.cloud.service;
 
+import com.blog.cloud.domain.task.WechatRobotSyncTaskDto;
+
 /**
  * @author lxw
  * @date 2019/2/13
@@ -13,6 +15,13 @@ public interface IWechatRobotJobService {
      * @param jobGroup
      */
     void addCronJob(String jobName, String jobGroup);
+
+    /**
+     * 添加微信登录后定时任务
+     * @param jobName
+     * @param jobGroup
+     */
+    void createSyncTaskJobCron(WechatRobotSyncTaskDto dto);
 
     /**
      * 添加异步任务

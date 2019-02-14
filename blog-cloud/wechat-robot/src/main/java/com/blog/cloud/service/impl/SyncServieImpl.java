@@ -1,6 +1,5 @@
 package com.blog.cloud.service.impl;
 
-import com.blog.cloud.config.CacheConfiguration;
 import com.blog.cloud.config.WechatApiProperties;
 import com.blog.cloud.config.WechatApiServiceInternal;
 import com.blog.cloud.domain.response.SyncCheckResponse;
@@ -11,15 +10,13 @@ import com.blog.cloud.enums.MessageType;
 import com.blog.cloud.enums.RetCode;
 import com.blog.cloud.enums.Selector;
 import com.blog.cloud.service.MessageService;
-import com.blog.cloud.service.SyncServie;
+import com.blog.cloud.service.ISyncServie;
 import com.blog.cloud.utils.RedisUtil;
 import com.blog.cloud.utils.WechatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -32,8 +29,8 @@ import java.util.stream.Collectors;
  * @description
  */
 @Slf4j
-@Service
-public class SyncServieImpl implements SyncServie {
+@Service("syncServie")
+public class SyncServieImpl implements ISyncServie {
 
     @Autowired
     private WechatApiServiceInternal internal;
@@ -49,7 +46,7 @@ public class SyncServieImpl implements SyncServie {
 
     private final static String RED_PACKET_CONTENT = "收到红包，请在手机上查看";
 
-    public void listen(String uuid) {
+    public boolean listen(String uuid) {
 
         try {
 
@@ -77,10 +74,13 @@ public class SyncServieImpl implements SyncServie {
                 } else if (selector != Selector.NORMAL.getCode()) {
                     throw new RuntimeException("syncCheckResponse ret = " + retCode);
                 }
-
+                return true;
+            } else {
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } finally {
 
         }

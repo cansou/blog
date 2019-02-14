@@ -1,10 +1,12 @@
 package com.blog.cloud.controller;
 
 import com.blog.cloud.domain.response.LoginResponse;
+import com.blog.cloud.domain.task.WechatRobotSyncTaskDto;
 import com.blog.cloud.enums.LoginCode;
+import com.blog.cloud.feign.task.IWechatRobotSyncFeignClient;
 import com.blog.cloud.http.RestResultBuilder;
-import com.blog.cloud.service.IWechatRobotUserService;
-import com.blog.cloud.service.LoginService;
+import com.blog.cloud.service.ILoginService;
+import com.blog.cloud.service.ISyncServie;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
@@ -15,11 +17,12 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -28,12 +31,13 @@ import java.io.IOException;
 public class WeChatLoginController extends WeChatBaseController {
 
     @Autowired
-    private LoginService loginService;
-
-
+    private ILoginService loginService;
 
     @Autowired
-    private ApplicationEventPublisher publisher;
+    private ISyncServie syncServie;
+
+    @Autowired
+    private IWechatRobotSyncFeignClient wechatRobotSyncFeignClient;
 
     @GetMapping(value = "/createLoginQRCode")
     @ApiOperation(value = "创建微信机器人登陆二维码", notes = "创建微信机器人登陆二维码")
@@ -85,8 +89,11 @@ public class WeChatLoginController extends WeChatBaseController {
         String uuid = request.getHeader("uuid");
         if (LoginCode.SUCCESS.getCode().equals(loginResponse.getCode())) {
             try {
-                loginService.wechatRobotLogin(loginResponse, uuid);
-//                publisher.publishEvent(new WechatRobotApplicationEvent(uuid));
+                String uni = loginService.wechatRobotLogin(loginResponse, uuid);
+                WechatRobotSyncTaskDto dto = new WechatRobotSyncTaskDto();
+                dto.setUuid(uuid);
+                dto.setUni(uni);
+                wechatRobotSyncFeignClient.syncTaskJobCron(dto);
             } catch (Exception e) {
                 e.printStackTrace();
                 return failBuild("登陆失败");
@@ -95,6 +102,18 @@ public class WeChatLoginController extends WeChatBaseController {
             return failBuild("登陆失败");
         }
         return successBuild();
+    }
+
+    @GetMapping(value = "/syncListener/{uuid}")
+    @ApiOperation(value = "微信机器人登陆", notes = "微信机器人登陆")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", dataType = "String", name = "uuid", value = "登陆的UUID", required = true)
+    })
+    public RestResultBuilder<String> syncListener(@PathVariable("uuid") String uuid) {
+        boolean listen = syncServie.listen(uuid);
+        Map<String, Object> map = new HashMap<>();
+        map.put("listen", listen);
+        return successBuild(map);
     }
 
 }

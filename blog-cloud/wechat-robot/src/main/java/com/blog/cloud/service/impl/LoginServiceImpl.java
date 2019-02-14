@@ -10,7 +10,7 @@ import com.blog.cloud.domain.shared.WechatRobotCache;
 import com.blog.cloud.enums.LoginCode;
 import com.blog.cloud.enums.StatusNotifyCode;
 import com.blog.cloud.service.IWechatRobotUserService;
-import com.blog.cloud.service.LoginService;
+import com.blog.cloud.service.ILoginService;
 import com.blog.cloud.utils.QRCodeUtils;
 import com.blog.cloud.utils.RedisUtil;
 import com.blog.cloud.utils.WechatUtils;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class LoginServiceImpl implements LoginService {
+public class LoginServiceImpl implements ILoginService {
 
     @Autowired
     private WechatApiServiceInternal internal;
@@ -114,7 +114,7 @@ public class LoginServiceImpl implements LoginService {
      * @param uuid
      */
     @Override
-    public void wechatRobotLogin(LoginResponse loginResponse, String uuid) {
+    public String wechatRobotLogin(LoginResponse loginResponse, String uuid) {
         WechatRobotCache cache = redisUtil.get(uuid, WechatRobotCache.class);
 
         Token token = internal.openNewloginpage(loginResponse.getRedirectUrl());
@@ -193,6 +193,7 @@ public class LoginServiceImpl implements LoginService {
         log.info("[*] login process completed");
         log.info("[*] start listening");
         redisUtil.set(uuid, cache);
+        return cache.getUin();
     }
 
 }
