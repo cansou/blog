@@ -2,7 +2,7 @@ package com.blog.cloud.service.impl;
 
 import com.blog.cloud.domain.shared.*;
 import com.blog.cloud.service.MessageService;
-import com.blog.cloud.service.WechatHttpService;
+import com.blog.cloud.service.IWechatHttpService;
 import com.blog.cloud.utils.MessageUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
 
     @Autowired
-    private WechatHttpService wechatHttpService;
+    private IWechatHttpService wechatHttpService;
 
     @Override
     public void onReceivingChatRoomTextMessage(Message message) {

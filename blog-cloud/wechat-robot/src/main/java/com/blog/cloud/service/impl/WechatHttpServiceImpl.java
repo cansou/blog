@@ -6,7 +6,7 @@ import com.blog.cloud.domain.response.*;
 import com.blog.cloud.domain.shared.ChatRoomDescription;
 import com.blog.cloud.domain.shared.Contact;
 import com.blog.cloud.enums.StatusNotifyCode;
-import com.blog.cloud.service.WechatHttpService;
+import com.blog.cloud.service.IWechatHttpService;
 import com.blog.cloud.utils.WechatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Set;
 
 @Slf4j
-@Service
-public class WechatHttpServiceImpl implements WechatHttpService {
+@Service("wechatHttpServic")
+public class WechatHttpServiceImpl implements IWechatHttpService {
 
     @Autowired
     private WechatApiServiceInternal internal;

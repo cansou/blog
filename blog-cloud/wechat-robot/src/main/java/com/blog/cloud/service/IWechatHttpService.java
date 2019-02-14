@@ -5,7 +5,7 @@ import com.blog.cloud.domain.shared.Contact;
 import java.util.List;
 import java.util.Set;
 
-public interface WechatHttpService {
+public interface IWechatHttpService {
 
     void logout();
 

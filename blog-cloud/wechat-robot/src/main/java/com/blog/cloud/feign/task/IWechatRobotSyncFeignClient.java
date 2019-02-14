@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name = "wechat-robot", fallback = WechatRobotSyncFeignClientFallbackImpl.class)
+@FeignClient(name = "task-server", fallback = WechatRobotSyncFeignClientFallbackImpl.class)
 public interface IWechatRobotSyncFeignClient {
 
     @RequestMapping(value = "/wechat/robot/syncTaskJobCron", method = RequestMethod.POST)

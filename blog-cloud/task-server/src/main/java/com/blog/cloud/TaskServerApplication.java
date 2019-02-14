@@ -5,8 +5,10 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
+
+@EnableFeignClients
 @EnableEurekaClient
 @ServletComponentScan
 @EnableHystrix

@@ -93,7 +93,8 @@ public class WeChatLoginController extends WeChatBaseController {
                 WechatRobotSyncTaskDto dto = new WechatRobotSyncTaskDto();
                 dto.setUuid(uuid);
                 dto.setUni(uni);
-                wechatRobotSyncFeignClient.syncTaskJobCron(dto);
+                RestResultBuilder restResultBuilder = wechatRobotSyncFeignClient.syncTaskJobCron(dto);
+                log.info(" restResultBuilder = {}", restResultBuilder);
             } catch (Exception e) {
                 e.printStackTrace();
                 return failBuild("登陆失败");

@@ -29,7 +29,7 @@ public class WechatRobotSyncTaskJob implements Job {
         System.out.println("=========================定时任务每3秒执行一次===============================");
         System.out.println("jobName=====:"+context.getJobDetail().getKey().getName());
         System.out.println("jobGroup=====:"+context.getJobDetail().getKey().getGroup());
-        System.out.println("taskData=====:"+context.getJobDetail().getJobDataMap().get("taskData"));
+        System.out.println("uuid=====:"+context.getJobDetail().getJobDataMap().get("uuid"));
         System.out.println(wechatRobotSyncFeignClient);
         //TODO  Feign注入，调用wechat-robot 服务
         String uuid = context.getJobDetail().getJobDataMap().getString("uuid");
