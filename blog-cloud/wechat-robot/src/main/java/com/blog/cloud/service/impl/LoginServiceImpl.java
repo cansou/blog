@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @description
  */
 @Slf4j
-@Service
+@Service("loginService")
 public class LoginServiceImpl implements ILoginService {
 
     @Autowired

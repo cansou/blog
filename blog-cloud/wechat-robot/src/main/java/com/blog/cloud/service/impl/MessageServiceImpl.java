@@ -1,7 +1,7 @@
 package com.blog.cloud.service.impl;
 
 import com.blog.cloud.domain.shared.*;
-import com.blog.cloud.service.MessageService;
+import com.blog.cloud.service.IMessageService;
 import com.blog.cloud.service.IWechatHttpService;
 import com.blog.cloud.utils.MessageUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,8 +17,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
-public class MessageServiceImpl implements MessageService {
+@Service("messageService")
+public class MessageServiceImpl implements IMessageService {
 
     @Autowired
     private IWechatHttpService wechatHttpService;

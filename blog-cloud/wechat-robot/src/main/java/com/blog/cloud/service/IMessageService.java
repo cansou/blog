@@ -8,7 +8,7 @@ import com.blog.cloud.domain.shared.RecommendInfo;
 import java.io.IOException;
 import java.util.Set;
 
-public interface MessageService {
+public interface IMessageService {
     /**
      * 事件：收到群聊天文本消息
      *

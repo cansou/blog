@@ -9,7 +9,7 @@ import com.blog.cloud.domain.shared.*;
 import com.blog.cloud.enums.MessageType;
 import com.blog.cloud.enums.RetCode;
 import com.blog.cloud.enums.Selector;
-import com.blog.cloud.service.MessageService;
+import com.blog.cloud.service.IMessageService;
 import com.blog.cloud.service.ISyncServie;
 import com.blog.cloud.utils.RedisUtil;
 import com.blog.cloud.utils.WechatUtils;
@@ -36,7 +36,7 @@ public class SyncServieImpl implements ISyncServie {
     private WechatApiServiceInternal internal;
 
     @Autowired
-    private MessageService messageService;
+    private IMessageService messageService;
 
     @Autowired
     private WechatApiProperties properties;
