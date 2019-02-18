@@ -427,6 +427,8 @@ public class WechatApiServiceInternal {
             });
             customHeader.set("Cookie", buffer.toString());
 
+            //log.info(uri.toString());
+
             ResponseEntity<String> responseEntity
                     = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
             String body = responseEntity.getBody();

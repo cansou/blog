@@ -9,12 +9,14 @@ import com.blog.cloud.domain.robot.WechatRobotFriendUserQueryDto;
 import com.blog.cloud.domain.shared.Contact;
 import com.blog.cloud.pojo.robot.WechatRobotFriendUser;
 import com.blog.cloud.service.IWechatRobotFriendUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service("wechatRobotFriendUserService")
 public class WechatRobotFriendUserServiceImpl extends ServiceImpl<IWechatRobotFriendUserMapper, WechatRobotFriendUser> implements IWechatRobotFriendUserService{
 

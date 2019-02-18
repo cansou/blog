@@ -8,7 +8,7 @@ CREATE TABLE `wechat_robot_user`(
   `create_time` BIGINT NOT NULL COMMENT '创建时间',
   `update_time` BIGINT NOT NULL COMMENT '更新时间',
   `user_status` TINYINT NOT NULL DEFAULT 1 COMMENT '用户状态（0 禁用 1 启用）',
-  `signature` VARCHAR(64) NOT NULL COMMENT '签名',
+  `signature` VARCHAR(3000) NOT NULL COMMENT '签名',
   PRIMARY KEY (id)
 )ENGINE=INNODB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='微信机器人用户实体类';
 
@@ -21,7 +21,7 @@ CREATE TABLE `wechat_robot_friend_user`(
   `sex` TINYINT COMMENT '性别',
   `create_time` BIGINT NOT NULL COMMENT '创建时间',
   `update_time` BIGINT NOT NULL COMMENT '更新时间',
-  `signature` VARCHAR(64) NOT NULL COMMENT '签名',
+  `signature` VARCHAR(3000) NOT NULL COMMENT '签名',
   PRIMARY KEY (id)
 )ENGINE=INNODB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='微信机器人用户好友表';
 

@@ -21,7 +21,7 @@ public class WechatRobotFriendUser implements Serializable {
 	@ApiModelProperty(name = "id", value = "数据ID")
 	private String id;
 
-	@TableField("belongUni")
+	@TableField("belong_uni")
 	@ApiModelProperty(name = "belongUni", value = "所属用户的Uni")
 	private Long belongUni;
 

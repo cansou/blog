@@ -126,6 +126,46 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     cache-enabled: false
 
+blog-server:
+  ribbon:
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
+
+user-server:
+  ribbon:
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
+
+wechat-server:
+  ribbon:
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
+
+wechat-robot:
+  ribbon:
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
+
+task-server:
+  ribbon:
+    ReadTimeout: 30000
+    ConnectTimeout: 15000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    OkToRetryOnAllOperations: true
+
 hystrix:
   command:
     default:

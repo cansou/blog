@@ -35,7 +35,16 @@ public class WechatRobotSyncTaskJob implements Job {
         String uuid = context.getJobDetail().getJobDataMap().getString("uuid");
         RestResultBuilder<Map<String, Object>> mapRestResultBuilder = wechatRobotSyncFeignClient.syncListener(uuid);
         Boolean listen = MapUtils.getBoolean(mapRestResultBuilder.getData(), "listen");
-        log.info("正常访问微信的");
+        if (listen) {
+            log.info("正常访问微信的");
+            listen = syncListener(uuid);
+        }
+    }
+
+    boolean syncListener (String uuid) {
+        RestResultBuilder<Map<String, Object>> mapRestResultBuilder = wechatRobotSyncFeignClient.syncListener(uuid);
+        Boolean listen = MapUtils.getBoolean(mapRestResultBuilder.getData(), "listen");
+        return listen;
     }
 
 }
