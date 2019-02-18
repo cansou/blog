@@ -498,6 +498,15 @@ public class WechatApiServiceInternal {
 
     }
 
+    /**
+     * 发送回复信息
+     * @param hostUrl
+     * @param baseRequest
+     * @param content
+     * @param fromUserName
+     * @param toUserName
+     * @return
+     */
     public SendMsgResponse sendText(String hostUrl, BaseRequest baseRequest, String content, String fromUserName, String toUserName) {
         final int scene = 0;
         final String rnd = String.valueOf(System.currentTimeMillis() * 10);

@@ -9,8 +9,9 @@ import com.blog.cloud.domain.shared.Token;
 import com.blog.cloud.domain.shared.WechatRobotCache;
 import com.blog.cloud.enums.LoginCode;
 import com.blog.cloud.enums.StatusNotifyCode;
-import com.blog.cloud.service.IWechatRobotUserService;
 import com.blog.cloud.service.ILoginService;
+import com.blog.cloud.service.IWechatRobotFriendUserService;
+import com.blog.cloud.service.IWechatRobotUserService;
 import com.blog.cloud.utils.QRCodeUtils;
 import com.blog.cloud.utils.RedisUtil;
 import com.blog.cloud.utils.WechatUtils;
@@ -39,6 +40,9 @@ public class LoginServiceImpl implements ILoginService {
 
     @Autowired
     private IWechatRobotUserService wechatRobotUserService;
+
+    @Autowired
+    private IWechatRobotFriendUserService wechatRobotFriendUserService;
 
     /**
      * 创建二维码
@@ -167,6 +171,8 @@ public class LoginServiceImpl implements ILoginService {
         log.info("[*] getContactResponse memberCount = " + contact.getMemberCount());
         seq = contact.getSeq();
         cache.getIndividuals().addAll(contact.getMemberList().stream().filter(WechatUtils::isIndividual).collect(Collectors.toSet()));
+        //TODO  插入用户好友数据
+        wechatRobotFriendUserService.insertWechatRobotFriendUser(cache.getIndividuals(), user.getUin());
         cache.getMediaPlatforms().addAll(contact.getMemberList().stream().filter(WechatUtils::isMediaPlatform).collect(Collectors.toSet()));
         log.info("[9] get contact completed");
 

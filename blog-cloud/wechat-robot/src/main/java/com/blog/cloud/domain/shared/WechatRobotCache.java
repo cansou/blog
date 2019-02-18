@@ -54,7 +54,7 @@ public class WechatRobotCache implements Serializable {
     @ApiModelProperty(name = "sid", value = "sid")
     private String sid;
 
-    @ApiModelProperty(name = "individuals", value = "individuals")
+    @ApiModelProperty(name = "individuals", value = "好友列表数据")
     private Set<Contact> individuals;
 
     @ApiModelProperty(name = "mediaPlatforms", value = "mediaPlatforms")
