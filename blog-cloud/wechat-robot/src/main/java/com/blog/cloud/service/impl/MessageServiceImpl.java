@@ -24,7 +24,7 @@ public class MessageServiceImpl implements IMessageService {
     private IWechatHttpService wechatHttpService;
 
     @Override
-    public void onReceivingChatRoomTextMessage(Message message) {
+    public void onReceivingChatRoomTextMessage(Message message, WechatRobotCache cache) {
         log.info("onReceivingChatRoomTextMessage");
         log.info("from chatroom: " + message.getFromUserName());
         log.info("from person: " + MessageUtils.getSenderOfChatRoomTextMessage(message.getContent()));
@@ -33,30 +33,30 @@ public class MessageServiceImpl implements IMessageService {
     }
 
     @Override
-    public void onReceivingChatRoomImageMessage(Message message, String thumbImageUrl, String fullImageUrl) {
+    public void onReceivingChatRoomImageMessage(Message message, String thumbImageUrl, String fullImageUrl, WechatRobotCache cache) {
         log.info("onReceivingChatRoomImageMessage");
         log.info("thumbImageUrl:" + thumbImageUrl);
         log.info("fullImageUrl:" + fullImageUrl);
     }
 
     @Override
-    public void onReceivingPrivateTextMessage(Message message) {
+    public void onReceivingPrivateTextMessage(Message message, WechatRobotCache cache) {
         log.info("onReceivingPrivateTextMessage");
         log.info("from: " + message.getFromUserName());
         log.info("to: " + message.getToUserName());
         log.info("content:" + message.getContent());
 //        将原文回复给对方
-        replyMessage(message);
+        replyMessage(message, cache);
     }
 
     @Override
-    public void onReceivingPrivateImageMessage(Message message, String thumbImageUrl, String fullImageUrl) {
+    public void onReceivingPrivateImageMessage(Message message, String thumbImageUrl, String fullImageUrl, WechatRobotCache cache) {
         try {
             log.info("onReceivingPrivateImageMessage");
             log.info("thumbImageUrl:" + thumbImageUrl);
             log.info("fullImageUrl:" + fullImageUrl);
 //        将图片保存在本地
-            byte[] data = wechatHttpService.downloadImage(thumbImageUrl);
+            byte[] data = wechatHttpService.downloadImage(thumbImageUrl, cache);
             FileOutputStream fos = new FileOutputStream("thumb.jpg");
             fos.write(data);
             fos.close();
@@ -66,7 +66,7 @@ public class MessageServiceImpl implements IMessageService {
     }
 
     @Override
-    public boolean onReceivingFriendInvitation(RecommendInfo info) {
+    public boolean onReceivingFriendInvitation(RecommendInfo info, WechatRobotCache cache) {
         log.info("onReceivingFriendInvitation");
         log.info("recommendinfo content:" + info.getContent());
 //        默认接收所有的邀请
@@ -74,21 +74,21 @@ public class MessageServiceImpl implements IMessageService {
     }
 
     @Override
-    public void postAcceptFriendInvitation(Message message) {
+    public void postAcceptFriendInvitation(Message message, WechatRobotCache cache) {
         try {
             log.info("postAcceptFriendInvitation");
 //        将该用户的微信号设置成他的昵称
             String content = StringEscapeUtils.unescapeXml(message.getContent());
             ObjectMapper xmlMapper = new XmlMapper();
             FriendInvitationContent friendInvitationContent = xmlMapper.readValue(content, FriendInvitationContent.class);
-            wechatHttpService.setAlias(message.getRecommendInfo().getUserName(), friendInvitationContent.getFromusername());
+            wechatHttpService.setAlias(message.getRecommendInfo().getUserName(), friendInvitationContent.getFromusername(), cache);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onChatRoomMembersChanged(Contact chatRoom, Set<ChatRoomMember> membersJoined, Set<ChatRoomMember> membersLeft) {
+    public void onChatRoomMembersChanged(Contact chatRoom, Set<ChatRoomMember> membersJoined, Set<ChatRoomMember> membersLeft, WechatRobotCache cache) {
         log.info("onChatRoomMembersChanged");
         log.info("chatRoom:" + chatRoom.getUserName());
         if (membersJoined != null && membersJoined.size() > 0) {
@@ -100,19 +100,19 @@ public class MessageServiceImpl implements IMessageService {
     }
 
     @Override
-    public void onNewChatRoomsFound(Set<Contact> chatRooms) {
+    public void onNewChatRoomsFound(Set<Contact> chatRooms, WechatRobotCache cache) {
         log.info("onNewChatRoomsFound");
         chatRooms.forEach(x -> log.info(x.getUserName()));
     }
 
     @Override
-    public void onChatRoomsDeleted(Set<Contact> chatRooms) {
+    public void onChatRoomsDeleted(Set<Contact> chatRooms, WechatRobotCache cache) {
         log.info("onChatRoomsDeleted");
         chatRooms.forEach(x -> log.info(x.getUserName()));
     }
 
     @Override
-    public void onNewFriendsFound(Set<Contact> contacts) {
+    public void onNewFriendsFound(Set<Contact> contacts, WechatRobotCache cache) {
         log.info("onNewFriendsFound");
         contacts.forEach(x -> {
             log.info(x.getUserName());
@@ -121,7 +121,7 @@ public class MessageServiceImpl implements IMessageService {
     }
 
     @Override
-    public void onFriendsDeleted(Set<Contact> contacts) {
+    public void onFriendsDeleted(Set<Contact> contacts, WechatRobotCache cache) {
         log.info("onFriendsDeleted");
         contacts.forEach(x -> {
             log.info(x.getUserName());
@@ -130,25 +130,25 @@ public class MessageServiceImpl implements IMessageService {
     }
 
     @Override
-    public void onNewMediaPlatformsFound(Set<Contact> mps) {
+    public void onNewMediaPlatformsFound(Set<Contact> mps, WechatRobotCache cache) {
         log.info("onNewMediaPlatformsFound");
     }
 
     @Override
-    public void onMediaPlatformsDeleted(Set<Contact> mps) {
+    public void onMediaPlatformsDeleted(Set<Contact> mps, WechatRobotCache cache) {
         log.info("onMediaPlatformsDeleted");
     }
 
     @Override
-    public void onRedPacketReceived(Contact contact) {
+    public void onRedPacketReceived(Contact contact, WechatRobotCache cache) {
         log.info("onRedPacketReceived");
         if (contact != null) {
             log.info("the red packet is from " + contact.getNickName());
         }
     }
 
-    private void replyMessage(Message message) {
-        wechatHttpService.sendText(message.getFromUserName(), message.getContent());
+    private void replyMessage(Message message, WechatRobotCache cache) {
+        wechatHttpService.sendText(message.getFromUserName(), message.getContent(), cache);
     }
 
 }

@@ -98,11 +98,11 @@ public class SyncServieImpl implements ISyncServie {
                 cache.getContactNamesWithUnreadMessage().add(message.getFromUserName());
                 //个人
                 if (isMessageFromIndividual(message)) {
-                    messageService.onReceivingPrivateTextMessage(message);
+                    messageService.onReceivingPrivateTextMessage(message, cache);
                 }
                 //群
                 else if (isMessageFromChatRoom(message)) {
-                    messageService.onReceivingChatRoomTextMessage(message);
+                    messageService.onReceivingChatRoomTextMessage(message, cache);
                 }
                 //图片
             } else if (message.getMsgType() == MessageType.IMAGE.getCode()) {
@@ -112,11 +112,11 @@ public class SyncServieImpl implements ISyncServie {
                 String thumbImageUrl = fullImageUrl + "&type=slave";
                 //个人
                 if (isMessageFromIndividual(message)) {
-                    messageService.onReceivingPrivateImageMessage(message, thumbImageUrl, fullImageUrl);
+                    messageService.onReceivingPrivateImageMessage(message, thumbImageUrl, fullImageUrl, cache);
                 }
                 //群
                 else if (isMessageFromChatRoom(message)) {
-                    messageService.onReceivingChatRoomImageMessage(message, thumbImageUrl, fullImageUrl);
+                    messageService.onReceivingChatRoomImageMessage(message, thumbImageUrl, fullImageUrl, cache);
                 }
             }
             //系统消息
@@ -136,16 +136,16 @@ public class SyncServieImpl implements ISyncServie {
                     }
                     if (contacts != null) {
                         Contact contact = contacts.stream().filter(x -> Objects.equals(x.getUserName(), from)).findAny().orElse(null);
-                        messageService.onRedPacketReceived(contact);
+                        messageService.onRedPacketReceived(contact, cache);
                     }
                 }
             }
             //好友邀请
             else if (message.getMsgType() == MessageType.VERIFYMSG.getCode() && cache.getOwner().getUserName().equals(message.getToUserName())) {
-                if (messageService.onReceivingFriendInvitation(message.getRecommendInfo())) {
+                if (messageService.onReceivingFriendInvitation(message.getRecommendInfo(), cache)) {
                     acceptFriendInvitation(message.getRecommendInfo(), cache);
                     log.info("[*] you've accepted the invitation");
-                    messageService.postAcceptFriendInvitation(message);
+                    messageService.postAcceptFriendInvitation(message, cache);
                 } else {
                     log.info("[*] you've declined the invitation");
                     //TODO decline invitation
@@ -218,7 +218,7 @@ public class SyncServieImpl implements ISyncServie {
                 existingIndividuals.add(x);
             });
             if (messageService != null && newIndividuals.size() > 0) {
-                messageService.onNewFriendsFound(newIndividuals);
+                messageService.onNewFriendsFound(newIndividuals, cache);
             }
         }
         //chatroom
@@ -235,7 +235,7 @@ public class SyncServieImpl implements ISyncServie {
             }
             existingChatRooms.addAll(newChatRooms);
             if (messageService != null && newChatRooms.size() > 0) {
-                messageService.onNewChatRoomsFound(newChatRooms);
+                messageService.onNewChatRoomsFound(newChatRooms, cache);
             }
             for (Contact chatRoom : modifiedChatRooms) {
                 Contact existingChatRoom = existingChatRooms.stream().filter(x -> x.getUserName().equals(chatRoom.getUserName())).findFirst().orElse(null);
@@ -250,7 +250,7 @@ public class SyncServieImpl implements ISyncServie {
                     Set<ChatRoomMember> joined = newMembers.stream().filter(x -> !oldMembers.contains(x)).collect(Collectors.toSet());
                     Set<ChatRoomMember> left = oldMembers.stream().filter(x -> !newMembers.contains(x)).collect(Collectors.toSet());
                     if (joined.size() > 0 || left.size() > 0) {
-                        messageService.onChatRoomMembersChanged(chatRoom, joined, left);
+                        messageService.onChatRoomMembersChanged(chatRoom, joined, left, cache);
                     }
                 }
             }
@@ -264,7 +264,7 @@ public class SyncServieImpl implements ISyncServie {
                 existingPlatforms.add(x);
             });
             if (messageService != null && newMediaPlatforms.size() > 0) {
-                messageService.onNewMediaPlatformsFound(newMediaPlatforms);
+                messageService.onNewMediaPlatformsFound(newMediaPlatforms, cache);
             }
         }
     }
@@ -287,13 +287,13 @@ public class SyncServieImpl implements ISyncServie {
         }
         if (messageService != null) {
             if (individuals.size() > 0) {
-                messageService.onFriendsDeleted(individuals);
+                messageService.onFriendsDeleted(individuals, cache);
             }
             if (chatRooms.size() > 0) {
-                messageService.onChatRoomsDeleted(chatRooms);
+                messageService.onChatRoomsDeleted(chatRooms, cache);
             }
             if (mediaPlatforms.size() > 0) {
-                messageService.onMediaPlatformsDeleted(mediaPlatforms);
+                messageService.onMediaPlatformsDeleted(mediaPlatforms, cache);
             }
         }
     }

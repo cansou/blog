@@ -44,8 +44,6 @@ public class QuartzSchedulerConfig {
     /**
      * 配置Scheduler
      * @param jobFactory
-     * @param cronTrigger
-     * @param jobDetails
      * @return
      */
     @Bean
