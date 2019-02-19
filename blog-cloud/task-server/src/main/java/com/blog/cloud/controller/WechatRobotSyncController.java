@@ -31,9 +31,10 @@ public class WechatRobotSyncController extends BaseController {
      * @param dto
      * @return
      */
-    @PostMapping(value = "/syncTaskJobCron")
-    public RestResultBuilder syncTaskJobCron(@RequestBody WechatRobotSyncTaskDto dto){
-        wechatRobotJobService.createSyncTaskJobCron(dto);
+//    @PostMapping(value = "/syncTaskJobCron")
+    @PostMapping(value = "/buildSyncRemindTimer")
+    public RestResultBuilder buildSyncRemindTimer(@RequestBody WechatRobotSyncTaskDto dto){
+        wechatRobotJobService.buildSyncRemindTimer(dto);
         return successBuild();
     }
 

@@ -19,6 +19,9 @@ public class WechatRobotJobServiceImpl implements IWechatRobotJobService {
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
 
+    @Autowired
+    private Scheduler scheduler;
+
     @Override
     public void addCronJob(String jobName, String jobGroup) {
         try {
@@ -70,6 +73,18 @@ public class WechatRobotJobServiceImpl implements IWechatRobotJobService {
                 scheduler.scheduleJob(jobDetail, trigger);
             }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void buildSyncRemindTimer(WechatRobotSyncTaskDto dto) {
+        try {
+            String jobName = dto.getUni();
+            String jobGroup = dto.getUni();
+            JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+        } catch (SchedulerException e) {
             e.printStackTrace();
         }
     }

@@ -24,6 +24,13 @@ public interface IWechatRobotJobService {
     void createSyncTaskJobCron(WechatRobotSyncTaskDto dto);
 
     /**
+     * 添加微信登录后定时任务
+     * @param jobName
+     * @param jobGroup
+     */
+    void buildSyncRemindTimer(WechatRobotSyncTaskDto dto);
+
+    /**
      * 添加异步任务
      * @param jobName
      * @param jobGroup
