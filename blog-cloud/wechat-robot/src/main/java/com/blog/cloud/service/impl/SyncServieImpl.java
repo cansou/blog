@@ -51,8 +51,15 @@ public class SyncServieImpl implements ISyncServie {
         try {
 
             WechatRobotCache cache = redisUtil.get(uuid, WechatRobotCache.class);
+            if (cache.get_() == null) {
+                cache.set_(System.currentTimeMillis());
+            }
+            if (cache.getR() == null) {
+                cache.setR(cache.get_());
+            }
+            cache.setR(cache.getR() + 25000);
 
-            SyncCheckResponse syncCheckResponse = internal.syncCheck(cache.getSyncUrl(), cache.getToken(), cache.getSyncKey());
+            SyncCheckResponse syncCheckResponse = internal.syncCheck(cache);
             Integer retCode = syncCheckResponse.getRetcode();
             Integer selector = syncCheckResponse.getSelector();
 
@@ -74,6 +81,7 @@ public class SyncServieImpl implements ISyncServie {
                 } else if (selector != Selector.NORMAL.getCode()) {
                     throw new RuntimeException("syncCheckResponse ret = " + retCode);
                 }
+                redisUtil.set(uuid, cache);
                 return true;
             } else {
                 return false;

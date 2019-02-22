@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "task-server", fallback = WechatRobotSyncFeignClientFallbackImpl.class)
 public interface IWechatRobotSyncFeignClient {
 
-    @RequestMapping(value = "/wechat/robot/syncTaskJobCron", method = RequestMethod.POST)
+    @RequestMapping(value = "/wechat/robot/buildSyncRemindTimer", method = RequestMethod.POST)
     public RestResultBuilder syncTaskJobCron(@RequestBody WechatRobotSyncTaskDto dto);
 
 }

@@ -69,6 +69,12 @@ public class WechatRobotCache implements Serializable {
     @ApiModelProperty(name = "token", value = "token")
     private Token token;
 
+    @ApiModelProperty(name = "r", value = "r")
+    private Long r;
+
+    @ApiModelProperty(name = "_", value = "_")
+    private Long _;
+
 
     public WechatRobotCache() {
         this.alive = false;

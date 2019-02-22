@@ -33,7 +33,7 @@ public class WechatRobotSyncQuartzJobBean extends QuartzJobBean {
         String uuid = context.getJobDetail().getJobDataMap().getString("uuid");
         RestResultBuilder<Map<String, Object>> mapRestResultBuilder = wechatRobotSyncFeignClient.syncListener(uuid);
         Boolean listen = MapUtils.getBoolean(mapRestResultBuilder.getData(), "listen");
-        if (listen) {
+        while (listen) {
             log.info("正常访问微信的");
             listen = syncListener(uuid);
         }

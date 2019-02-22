@@ -397,7 +397,12 @@ public class WechatApiServiceInternal {
         return null;
     }
 
-    public SyncCheckResponse syncCheck(String hostUrl, Token token, SyncKey syncKey) {
+    public SyncCheckResponse syncCheck(WechatRobotCache cache) {
+        log.info("invock method syncCheck uuid = {}, uin = {}", cache.getUuid(), cache.getUin());
+        String hostUrl = cache.getSyncUrl();
+        Token token = cache.getToken();
+        SyncKey syncKey = cache.getSyncKey();
+
         try {
             final Pattern pattern = Pattern.compile("window.synccheck=\\{retcode:\"(\\d+)\",selector:\"(\\d+)\"\\}");
 
@@ -408,8 +413,8 @@ public class WechatApiServiceInternal {
             builder.addParameter("skey", token.getSkey());
             builder.addParameter("deviceid", DeviceIdGenerator.generate());
             builder.addParameter("synckey", syncKey.toString());
-            builder.addParameter("r", String.valueOf(System.currentTimeMillis()));
-            builder.addParameter("_", String.valueOf(System.currentTimeMillis()));
+            builder.addParameter("r", cache.getR().toString());
+            builder.addParameter("_", cache.get_().toString());
 
             final URI uri = builder.build().toURL().toURI();
             HttpHeaders customHeader = new HttpHeaders();
@@ -426,8 +431,6 @@ public class WechatApiServiceInternal {
                 buffer.append(s);
             });
             customHeader.set("Cookie", buffer.toString());
-
-            //log.info(uri.toString());
 
             ResponseEntity<String> responseEntity
                     = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(customHeader), String.class);
