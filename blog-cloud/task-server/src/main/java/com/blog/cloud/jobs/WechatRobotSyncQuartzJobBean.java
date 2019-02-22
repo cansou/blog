@@ -4,11 +4,10 @@ import com.blog.cloud.feign.wechat.robot.IWechatRobotSyncFeignClient;
 import com.blog.cloud.http.RestResultBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.util.Map;
 
@@ -18,14 +17,13 @@ import java.util.Map;
  * @description
  */
 @Slf4j
-@Component
-public class WechatRobotSyncTaskJob implements Job {
+public class WechatRobotSyncQuartzJobBean extends QuartzJobBean {
 
     @Autowired
     private IWechatRobotSyncFeignClient wechatRobotSyncFeignClient;
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         System.out.println("=========================定时任务每3秒执行一次===============================");
         System.out.println("jobName=====:"+context.getJobDetail().getKey().getName());
         System.out.println("jobGroup=====:"+context.getJobDetail().getKey().getGroup());
@@ -46,5 +44,4 @@ public class WechatRobotSyncTaskJob implements Job {
         Boolean listen = MapUtils.getBoolean(mapRestResultBuilder.getData(), "listen");
         return listen;
     }
-
 }

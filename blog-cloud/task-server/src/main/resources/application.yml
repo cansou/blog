@@ -111,6 +111,27 @@ spring:
         url-pattern: /druid/*
         #允许清除记录
         reset-enable: false
+  quartz:
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: clusteredScheduler
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            useProperties: false
+            clusterCheckinInterval: 10000
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+    job-store-type: jdbc
+
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
@@ -151,14 +172,6 @@ wechat-server:
     OkToRetryOnAllOperations: true
 
 wechat-robot:
-  ribbon:
-    ReadTimeout: 30000
-    ConnectTimeout: 15000
-    MaxAutoRetries: 0
-    MaxAutoRetriesNextServer: 0
-    OkToRetryOnAllOperations: true
-
-task-server:
   ribbon:
     ReadTimeout: 30000
     ConnectTimeout: 15000
