@@ -18,6 +18,7 @@ import com.blog.cloud.utils.WechatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -117,6 +118,7 @@ public class LoginServiceImpl implements ILoginService {
      * @param loginResponse
      * @param uuid
      */
+    @Transactional
     @Override
     public String wechatRobotLogin(LoginResponse loginResponse, String uuid) {
         WechatRobotCache cache = redisUtil.get(uuid, WechatRobotCache.class);
@@ -172,7 +174,11 @@ public class LoginServiceImpl implements ILoginService {
         seq = contact.getSeq();
         cache.getIndividuals().addAll(contact.getMemberList().stream().filter(WechatUtils::isIndividual).collect(Collectors.toSet()));
         //TODO  插入用户好友数据
-        wechatRobotFriendUserService.insertWechatRobotFriendUser(cache.getIndividuals(), user.getUin());
+
+        if (wechatRobotFriendUserService.deleteWechatRobotFriendUser(user.getUin())) {
+            wechatRobotFriendUserService.insertWechatRobotFriendUser(cache.getIndividuals(), user.getUin());
+        }
+
         cache.getMediaPlatforms().addAll(contact.getMemberList().stream().filter(WechatUtils::isMediaPlatform).collect(Collectors.toSet()));
         log.info("[9] get contact completed");
 

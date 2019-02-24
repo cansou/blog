@@ -26,6 +26,12 @@ public class WechatRobotFriendUserServiceImpl extends ServiceImpl<IWechatRobotFr
 	}
 
 	@Override
+	public Boolean deleteWechatRobotFriendUser(Long uni) {
+		EntityWrapper<WechatRobotFriendUser> wrapper = new EntityWrapper<>();
+		return delete(wrapper.eq("belong_uni", uni));
+	}
+
+	@Override
 	public Boolean insertWechatRobotFriendUser(Set<Contact> contacts, Long uni) {
 		long currentTimeMillis = System.currentTimeMillis();
 		List<WechatRobotFriendUser> friendUsers = new ArrayList<>();

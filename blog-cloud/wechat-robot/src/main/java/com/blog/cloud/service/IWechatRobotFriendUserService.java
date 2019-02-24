@@ -12,6 +12,8 @@ public interface IWechatRobotFriendUserService {
 
 	List<WechatRobotFriendUser> listWechatRobotFriendUser(BaseReqDto<WechatRobotFriendUserQueryDto> reqDto);
 
+	Boolean deleteWechatRobotFriendUser(Long uni);
+
 	Boolean insertWechatRobotFriendUser(Set<Contact> contacts, Long uni);
 
 }
