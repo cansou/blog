@@ -181,13 +181,14 @@ public class SyncServieImpl implements ISyncServie {
                 cache.getHostUrl(),
                 cache.getBaseRequest(),
                 cache.getPassTicket(),
-                Arrays.asList(user)
+                Arrays.asList(user),
+                cache
         );
         WechatUtils.checkBaseResponse(verifyUserResponse);
     }
 
     private SyncResponse sync(WechatRobotCache cache) {
-        SyncResponse syncResponse = internal.sync(cache.getHostUrl(), cache.getSyncKey(), cache.getBaseRequest());
+        SyncResponse syncResponse = internal.sync(cache.getHostUrl(), cache.getSyncKey(), cache.getBaseRequest(), cache);
         WechatUtils.checkBaseResponse(syncResponse);
         cache.setSyncKey(syncResponse.getSyncKey());
         cache.setSyncCheckKey(syncResponse.getSyncCheckKey());

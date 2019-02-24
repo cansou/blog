@@ -45,13 +45,13 @@ public class WechatHttpServiceImpl implements IWechatHttpService {
     @Override
     public void sendText(String userName, String content, WechatRobotCache cache) {
         notifyNecessary(userName, cache);
-        SendMsgResponse response = internal.sendText(cache.getHostUrl(), cache.getBaseRequest(), content, cache.getOwner().getUserName(), userName);
+        SendMsgResponse response = internal.sendText(cache.getHostUrl(), cache.getBaseRequest(), content, cache.getOwner().getUserName(), userName, cache);
         WechatUtils.checkBaseResponse(response);
     }
 
     @Override
     public void setAlias(String userName, String newAlias, WechatRobotCache cache) {
-        OpLogResponse response = internal.setAlias(cache.getHostUrl(), cache.getBaseRequest(), newAlias, userName, cache.getToken());
+        OpLogResponse response = internal.setAlias(cache.getHostUrl(), cache.getBaseRequest(), newAlias, userName, cache.getToken(), cache);
         WechatUtils.checkBaseResponse(response);
     }
 
@@ -70,7 +70,7 @@ public class WechatHttpServiceImpl implements IWechatHttpService {
 
     @Override
     public void createChatRoom(List<String> userNames, String topic, WechatRobotCache cache) {
-        CreateChatRoomResponse response = internal.createChatRoom(cache.getHostUrl(), cache.getBaseRequest(), userNames, topic, cache.getToken());
+        CreateChatRoomResponse response = internal.createChatRoom(cache.getHostUrl(), cache.getBaseRequest(), userNames, topic, cache.getToken(), cache);
         WechatUtils.checkBaseResponse(response);
         //invoke BatchGetContact after CreateChatRoom
         ChatRoomDescription description = new ChatRoomDescription();
@@ -83,13 +83,13 @@ public class WechatHttpServiceImpl implements IWechatHttpService {
 
     @Override
     public void deleteChatRoomMember(String chatRoomUserName, String userName, WechatRobotCache cache) {
-        DeleteChatRoomMemberResponse response = internal.deleteChatRoomMember(cache.getHostUrl(), cache.getBaseRequest(), chatRoomUserName, userName, cache.getToken());
+        DeleteChatRoomMemberResponse response = internal.deleteChatRoomMember(cache.getHostUrl(), cache.getBaseRequest(), chatRoomUserName, userName, cache.getToken(), cache);
         WechatUtils.checkBaseResponse(response);
     }
 
     @Override
     public void addChatRoomMember(String chatRoomUserName, String userName, WechatRobotCache cache) {
-        AddChatRoomMemberResponse response = internal.addChatRoomMember(cache.getHostUrl(), cache.getBaseRequest(), chatRoomUserName, userName, cache.getToken());
+        AddChatRoomMemberResponse response = internal.addChatRoomMember(cache.getHostUrl(), cache.getBaseRequest(), chatRoomUserName, userName, cache.getToken(), cache);
         WechatUtils.checkBaseResponse(response);
         Contact chatRoom = cache.getChatRooms().stream().filter(x -> chatRoomUserName.equals(x.getUserName())).findFirst().orElse(null);
         if (chatRoom == null) {
@@ -100,7 +100,7 @@ public class WechatHttpServiceImpl implements IWechatHttpService {
 
     @Override
     public byte[] downloadImage(String url, WechatRobotCache cache) {
-        return internal.downloadImage(url);
+        return internal.downloadImage(url, cache);
     }
 
     @Override

@@ -75,6 +75,9 @@ public class WechatRobotCache implements Serializable {
     @ApiModelProperty(name = "_", value = "_")
     private Long _;
 
+    @ApiModelProperty(name = "Cookie", value = "Cookie")
+    private String Cookie;
+
 
     public WechatRobotCache() {
         this.alive = false;
