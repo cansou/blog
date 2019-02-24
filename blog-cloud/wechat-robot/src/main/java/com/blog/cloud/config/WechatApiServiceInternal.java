@@ -401,7 +401,7 @@ public class WechatApiServiceInternal {
     }
 
     public SyncCheckResponse syncCheck(WechatRobotCache cache) {
-        log.info("invock method syncCheck uuid = {}, uin = {}", cache.getUuid(), cache.getUin());
+        log.info("invock method syncCheck uin = {}, uuid = {}", cache.getUin(), cache.getUuid());
         String hostUrl = cache.getSyncUrl();
         Token token = cache.getToken();
         SyncKey syncKey = cache.getSyncKey();
