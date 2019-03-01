@@ -19,6 +19,7 @@
         <module>blog-server</module>
         <module>wechat-server</module>
         <module>wechat-robot</module>
+        <module>parent-framework</module>
     </modules>
 
     <parent>
