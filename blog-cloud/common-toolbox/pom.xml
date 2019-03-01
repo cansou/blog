@@ -134,7 +134,7 @@
             <version>1.4.7</version>
         </dependency>
 
-        <!--reids-->
+        <!--reids start-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -142,10 +142,19 @@
         </dependency>
 
         <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.8.2</version>
+        </dependency>
+        <!--reids end-->
+
+        <!--reids + shiro start-->
+        <dependency>
             <groupId>org.crazycake</groupId>
             <artifactId>shiro-redis</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <!--reids + shiro end-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -171,20 +180,6 @@
             <artifactId>javase</artifactId>
             <version>${zxing.version}</version>
         </dependency>
-
-        <!--quartz start-->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${quartz.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz-jobs</artifactId>
-            <version>${quartz.version}</version>
-        </dependency>
-        <!--quartz end-->
 
     </dependencies>
 
