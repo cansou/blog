@@ -16,6 +16,7 @@
 
     <properties>
         <redis.framework.version>2.0.5.RELEASE</redis.framework.version>
+        <redisson.version>3.9.1</redisson.version>
         <spring.configuration.processor>2.0.5.RELEASE</spring.configuration.processor>
         <spring.autoconfigure>2.0.5.RELEASE</spring.autoconfigure>
     </properties>
