@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.cloud.framework</groupId>
     <artifactId>redis-framework</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <name>redis-framework</name>
     <description>Demo project for Spring Boot</description>
 
@@ -33,9 +33,15 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
             <version>${redis.framework.version}</version>
-            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <version>${redis.framework.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

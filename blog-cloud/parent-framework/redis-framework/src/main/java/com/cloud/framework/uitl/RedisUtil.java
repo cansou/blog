@@ -1,6 +1,8 @@
-package com.blog.cloud.utils;
+package com.cloud.framework.uitl;
 
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,7 +14,8 @@ import java.io.Serializable;
  * @date 2018/12/31
  * @description
  */
-//@Component
+@ConditionalOnBean(value = RedissonClient.class)
+@Component
 public class RedisUtil {
 
     @Autowired
