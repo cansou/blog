@@ -3,10 +3,7 @@ package com.blog.cloud.service.impl;
 import com.blog.cloud.config.WechatApiServiceInternal;
 import com.blog.cloud.domain.request.BaseRequest;
 import com.blog.cloud.domain.response.*;
-import com.blog.cloud.domain.shared.ChatRoomDescription;
-import com.blog.cloud.domain.shared.Owner;
-import com.blog.cloud.domain.shared.Token;
-import com.blog.cloud.domain.shared.WechatRobotCache;
+import com.blog.cloud.domain.shared.*;
 import com.blog.cloud.enums.LoginCode;
 import com.blog.cloud.enums.StatusNotifyCode;
 import com.blog.cloud.service.ILoginService;
@@ -22,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -123,7 +121,7 @@ public class LoginServiceImpl implements ILoginService {
     public String wechatRobotLogin(LoginResponse loginResponse, String uuid) {
         WechatRobotCache cache = redisUtil.get(uuid, WechatRobotCache.class);
 
-        Token token = internal.openNewloginpage(loginResponse.getRedirectUrl());
+        Token token = internal.openNewloginpage(loginResponse.getRedirectUrl(), cache);
 
         if (token.getRet() == 0) {
             cache.setPassTicket(token.getPass_ticket());
@@ -172,11 +170,12 @@ public class LoginServiceImpl implements ILoginService {
         log.info("[*] getContactResponse seq = " + contact.getSeq());
         log.info("[*] getContactResponse memberCount = " + contact.getMemberCount());
         seq = contact.getSeq();
-        cache.getIndividuals().addAll(contact.getMemberList().stream().filter(WechatUtils::isIndividual).collect(Collectors.toSet()));
+//        cache.getIndividuals().addAll(contact.getMemberList().stream().filter(WechatUtils::isIndividual).collect(Collectors.toSet()));
+        Set<Contact> collect = contact.getMemberList().stream().filter(WechatUtils::isIndividual).collect(Collectors.toSet());
         //TODO  插入用户好友数据
 
         if (wechatRobotFriendUserService.deleteWechatRobotFriendUser(user.getUin())) {
-            wechatRobotFriendUserService.insertWechatRobotFriendUser(cache.getIndividuals(), user.getUin());
+            wechatRobotFriendUserService.insertWechatRobotFriendUser(collect, user.getUin());
         }
 
         cache.getMediaPlatforms().addAll(contact.getMemberList().stream().filter(WechatUtils::isMediaPlatform).collect(Collectors.toSet()));

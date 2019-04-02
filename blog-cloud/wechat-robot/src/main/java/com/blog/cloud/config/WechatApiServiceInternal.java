@@ -220,7 +220,7 @@ public class WechatApiServiceInternal {
      * @param redirectUrl
      * @return
      */
-    public Token openNewloginpage(String redirectUrl) {
+    public Token openNewloginpage(String redirectUrl, WechatRobotCache cache) {
 
         redirectUrl = redirectUrl + "&fun=new&version=v2";
         log.info("openNewloginpage params -> " + redirectUrl);
